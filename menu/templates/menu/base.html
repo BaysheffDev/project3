@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Fresca&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <!-- Slow but official link to Font Awesome -->
+    <!-- <script src="https://kit.fontawesome.com/a61b6b2d19.js"></script> -->
+    <!-- Fast cloudflare link to Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
+    <script type="text/javascript" src="{% static 'scripts/script.js' %}""></script>
+
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    {% block body %}
+    {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<h1>Menu</h1>
+<div class="menu_container">
+  {% for submenu in submenus %}
+    <div class="submenu_title">
+      {{ submenu.name }}
+    </div>
+    <div class="submenu_container">
+      {% for category in submenu.categories.all %}
+        <div class="category_container">
+          <div class="">
+            {{ category }}
+          </div>
+          <div class="item_container">
+          {% for item in items %}
+            {% if item.category == category %}
+              <div class="">
+                {{ item.name }} {{ item.stdPrice|default_if_none:"" }} {{ item.smallPrice|default_if_none:"" }} {{ item.largePrice|default_if_none:"" }}
+              </div>
+              {% if item.itemToppings.all %}
+                <div class="">EXTRAS</div>
+                <div class="toppings_container">
+                  {% for topping in item.itemToppings.all %}
+                    <div class="">
+                      {{ topping.name }} {{ topping.price }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          </div>
+          {% if category.categoryToppings.all %}
+            <div class="">TOPPINGS</div>
+            <div class="toppings_container">
+              {% for topping in toppings %}
+                {% if topping.category == category %}
+                  <div class="">
+                    {{ topping.name }} {{topping.price|default_if_none:""}}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          <div class="category_button">
+            <input type="button" name="" value="Add to Cart"></input>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>

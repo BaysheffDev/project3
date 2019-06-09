@@ -1,0 +1,153 @@
+body, html {
+  padding: 0;
+  margin: 0;
+  font-family: 'Fresca', cursive;
+}
+
+/* HEADER */
+nav {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0px 2px 5px -2px #3e3e3e;
+  background: linear-gradient(1deg, #da0000, #ff5454);
+  color: white;
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+nav > div {
+  margin: 0px 15px;
+}
+
+.nav-spacer {
+  height: 50px;
+}
+
+.logo_container {
+    display: flex;
+    align-items: center;
+}
+
+.login_container {
+  display: flex;
+  width: 120px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* MENU */
+.menu_container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.submenu_container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.submenu_title {
+}
+
+.category_container {
+  margin: 10px;
+  padding: 10px;
+  width: 250px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #afafaf;
+}
+
+.category_button {
+    text-align: center;
+}
+
+.item_container {
+  background: lightgreen;
+  margin: 10px;
+  padding: 10px;
+}
+
+.toppings_container {
+  background: pink;
+  margin: 10px;
+  padding: 10px;
+}
+
+/* CART*/
+.cart_button {
+  background: #ffffff;
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  box-shadow: 0px 0px 7px 0px grey;
+  color: white;
+}
+
+.cart_icon {
+  position: absolute;
+  font-size: 1.5em;
+  transform: translate(-2px);
+  color: #fb4a4a;
+}
+
+.cart_notification_box {
+  position: absolute;
+  top: -60px;
+  background: #fe5252;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 0px 3px 0px grey;
+}
+
+.cart_notification_point {
+    border-top: 10px solid #fe5252;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    width: 0;
+    position: absolute;
+    bottom: -10px;
+}
+
+/* FOOTER */
+.footer {
+  display: flex;
+  background: linear-gradient(#00b300, #308000);
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.signature {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.icons {
+  display: flex;
+  font-size: 1.4em;
+}
+
+.icon_container {
+  margin: 0 15px;
+  background: black;
+  padding: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
