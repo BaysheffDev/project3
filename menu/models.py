@@ -9,6 +9,7 @@ class Submenu(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=64)
     submenu = models.ForeignKey(Submenu, blank=True, null=True, on_delete=models.CASCADE, related_name="categories")
+    sizes = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name}"

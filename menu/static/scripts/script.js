@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cart functionality
   let cartOpen = false;
-  cartButton.addEventListener("click", function() {
+  cartButton.onclick = () => {
     if (cartOpen) {
       cartOverlay.classList.add('hidden');
       cart.classList.remove('active');
@@ -26,7 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
       cartIcon.classList.add('cart_icon_active');
       cartOpen = true;
     }
-  });
+  };
+
+  cartOverlay.onclick = () => {
+    cartOverlay.classList.add('hidden');
+    cart.classList.remove('active');
+    cart.classList.add('hidden');
+    cartButton.classList.remove('cart_button_active');
+    cartIcon.classList.remove('cart_icon_active');
+    cartOpen = false;
+  }
 
 });
 

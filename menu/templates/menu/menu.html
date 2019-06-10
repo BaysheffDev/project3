@@ -11,17 +11,46 @@
             {{ category }}
           </div>
           <div class="item_container">
+            {% if category.sizes %}
+            <div class="sizes">
+              <div class="size_container">
+                <div class="size_small">Small</div>
+                <div class="size_large">Large</div>
+              </div>
+            </div>
+            {% endif %}
           {% for item in items %}
             {% if item.category == category %}
-              <div class="">
-                {{ item.name }} {{ item.stdPrice|default_if_none:"" }} {{ item.smallPrice|default_if_none:"" }} {{ item.largePrice|default_if_none:"" }}
+              <div class="item">
+                <div class="item_name">{{ item.name }}</div>
+                <div class="price_container">
+                  {% if category.sizes %}
+                    <div class="item_smallPrice">
+                      {{ item.smallPrice|default_if_none:"" }}
+                      <input type="checkbox" name="" value="">
+                    </div>
+                    <div class="item_largePrice">
+                      {{ item.largePrice|default_if_none:"" }}
+                      <input type="checkbox" name="" value="">
+                    </div>
+                  {% else %}
+                    <div class="item_stdPrice">
+                      {{ item.stdPrice|default_if_none:"" }}
+                      <input type="checkbox" name="" value="">
+                    </div>
+                  {% endif %}
+                </div>
               </div>
               {% if item.itemToppings.all %}
                 <div class="">EXTRAS</div>
                 <div class="toppings_container">
                   {% for topping in item.itemToppings.all %}
-                    <div class="">
-                      {{ topping.name }} {{ topping.price }}
+                    <div class="topping">
+                      <div class="topping_name">{{ topping.name }}</div>
+                      <div class="topping_price">
+                        {{ topping.price }}
+                        <input type="checkbox" name="" value="">
+                      </div>
                     </div>
                   {% endfor %}
                 </div>
@@ -34,9 +63,13 @@
             <div class="toppings_container">
               {% for topping in toppings %}
                 {% if topping.category == category %}
-                  <div class="">
-                    {{ topping.name }} {{topping.price|default_if_none:""}}
+                <div class="topping">
+                  <div class="topping_name">{{ topping.name }}</div>
+                  <div class="topping_price">
+                    {{ topping.price|default_if_none:"" }}
+                    <input type="checkbox" name="" value="">
                   </div>
+                </div>
                 {% endif %}
               {% endfor %}
             </div>

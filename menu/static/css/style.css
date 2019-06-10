@@ -56,7 +56,7 @@ nav > div {
 .category_container {
   margin: 10px;
   padding: 10px;
-  width: 250px;
+  width: 300px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px #afafaf;
   background: black;
@@ -68,8 +68,8 @@ nav > div {
 }
 
 .item_container {
-  background: lightgreen;
-  margin: 10px;
+  background: #02b301;
+  margin: 10px 0px;
   padding: 10px;
 }
 
@@ -77,6 +77,37 @@ nav > div {
   background: #fe5252;
   margin: 10px;
   padding: 10px;
+}
+
+.sizes {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.size_small, .size_large {
+  text-decoration: underline;
+}
+
+.size_container div, .price_container div {
+  width: 56px;
+}
+
+.size_container, .price_container {
+    display: flex;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item_smallPrice, .item_largePrice {
+    display: flex;
+    justify-content: space-between;
+}
+
+.topping {
+  display: flex;
 }
 
 /* CART*/
@@ -108,10 +139,13 @@ nav > div {
   box-shadow: 0px 0px 7px 0px grey;
   color: #fff;
   z-index: 1;
+  transition: all .2s ease-in-out;
 }
 
 .cart_button:hover {
   background: #fb4a4a;
+  transform: scale(1.05);
+  box-shadow: 0px 0px 10px 2px grey;
 }
 .cart_button:hover .cart_icon {
   color: #fff;
