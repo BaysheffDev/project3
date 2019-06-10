@@ -11,7 +11,7 @@ nav {
   justify-content: space-between;
   box-shadow: 0px 2px 5px -2px #3e3e3e;
   background: linear-gradient(1deg, #da0000, #ff5454);
-  color: white;
+  color: #fff;
   position: fixed;
   width: 100%;
   top: 0;
@@ -26,8 +26,8 @@ nav > div {
 }
 
 .logo_container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .login_container {
@@ -59,6 +59,8 @@ nav > div {
   width: 250px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px #afafaf;
+  background: black;
+  color: #fff;
 }
 
 .category_button {
@@ -72,12 +74,26 @@ nav > div {
 }
 
 .toppings_container {
-  background: pink;
+  background: #fe5252;
   margin: 10px;
   padding: 10px;
 }
 
 /* CART*/
+.cart_overlay {
+  background: #00000047;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 9;
+}
+
+.cart_container {
+  position: relative;
+  z-index: 10;
+}
+
 .cart_button {
   background: #ffffff;
   width: 75px;
@@ -90,7 +106,15 @@ nav > div {
   right: 50px;
   bottom: 50px;
   box-shadow: 0px 0px 7px 0px grey;
-  color: white;
+  color: #fff;
+  z-index: 1;
+}
+
+.cart_button:hover {
+  background: #fb4a4a;
+}
+.cart_button:hover .cart_icon {
+  color: #fff;
 }
 
 .cart_icon {
@@ -100,24 +124,60 @@ nav > div {
   color: #fb4a4a;
 }
 
+.cart_notification_container {
+  position: fixed;
+  right: 120px;
+  bottom: 75px;
+  overflow-x: hidden;
+  width: 0px;
+  text-align: center;
+}
+
+.cart_notification_animation {
+  animation-name: cartNotification;
+  animation-duration: 4s;
+}
+
+@keyframes cartNotification {
+  0% {width: 0px}
+  20% {width: 220px}
+  80% {width: 220px}
+  100% {width: 0px}
+}
+
 .cart_notification_box {
-  position: absolute;
-  top: -60px;
   background: #fe5252;
   padding: 5px;
   border-radius: 5px;
   display: flex;
   justify-content: center;
+  align-items: center;
   box-shadow: 0px 0px 3px 0px grey;
+  color: #fff;
+  bottom: 0;
+  position: relative;
+  width: 190px;
 }
 
 .cart_notification_point {
-    border-top: 10px solid #fe5252;
-    border-right: 6px solid transparent;
-    border-left: 6px solid transparent;
-    width: 0;
-    position: absolute;
-    bottom: -10px;
+  border-top: 10px solid #fe5252;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  width: 0;
+  position: absolute;
+  right: -10px;
+  transform: rotate(-90deg);
+}
+
+.cart_contents {
+  position: fixed;
+  right: 135px;
+  bottom: 140px;
+  background: #fff;
+  width: 300px;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 6px 0px grey;
 }
 
 /* FOOTER */
@@ -127,7 +187,7 @@ nav > div {
   height: 150px;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #fff;
 }
 
 .signature {
@@ -150,4 +210,23 @@ nav > div {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/***************************/
+/* Functional classes */
+
+/* GENERAL */
+.active {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+
+/* CART */
+.cart_button_active {
+  background: #fb4a4a;
+}
+.cart_icon_active {
+  color: #fff;
 }
