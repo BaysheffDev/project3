@@ -27,16 +27,40 @@
                   {% if category.sizes %}
                     <div class="item_smallPrice">
                       {{ item.smallPrice|default_if_none:"" }}
-                      <input type="checkbox" name="" value="">
+                      <div class="quantity_container">
+                        <div class="plus">
+                          <i class="fas fa-plus"></i>
+                        </div>
+                        <input type="text" name="" value="0">
+                        <div class="minus">
+                          <i class="fas fa-minus"></i>
+                        </div>
+                      </div>
                     </div>
                     <div class="item_largePrice">
                       {{ item.largePrice|default_if_none:"" }}
-                      <input type="checkbox" name="" value="">
+                      <div class="quantity_container">
+                        <div class="plus">
+                          <i class="fas fa-plus"></i>
+                        </div>
+                        <input type="text" name="" value="0">
+                        <div class="minus">
+                          <i class="fas fa-minus"></i>
+                        </div>
+                      </div>
                     </div>
                   {% else %}
                     <div class="item_stdPrice">
                       {{ item.stdPrice|default_if_none:"" }}
-                      <input type="checkbox" name="" value="">
+                      <div class="quantity_container">
+                        <div class="plus">
+                          <i class="fas fa-plus"></i>
+                        </div>
+                        <input type="text" name="" value="0">
+                        <div class="minus">
+                          <i class="fas fa-minus"></i>
+                        </div>
+                      </div>
                     </div>
                   {% endif %}
                 </div>

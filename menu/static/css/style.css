@@ -48,6 +48,7 @@ nav > div {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  font-size: 0.9em;
 }
 
 .submenu_title {
@@ -55,8 +56,8 @@ nav > div {
 
 .category_container {
   margin: 10px;
-  padding: 10px;
-  width: 300px;
+  padding: 20px;
+  width: 280px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px #afafaf;
   background: black;
@@ -67,6 +68,20 @@ nav > div {
     text-align: center;
 }
 
+.category_button input {
+  transform: translateY(34px);
+  padding: 5px 10px;
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0px 8px 1px grey;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #fb4a4a;
+  height: 30px;
+  width: 150px;
+}
+
 .item_container {
   background: #02b301;
   margin: 10px 0px;
@@ -75,7 +90,6 @@ nav > div {
 
 .toppings_container {
   background: #fe5252;
-  margin: 10px;
   padding: 10px;
 }
 
@@ -88,26 +102,51 @@ nav > div {
   text-decoration: underline;
 }
 
-.size_container div, .price_container div {
-  width: 56px;
+.size_small, .size_large {
+  width: 80px;
 }
 
 .size_container, .price_container {
-    display: flex;
+  display: flex;
+  align-items: center;
 }
 
 .item {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-.item_smallPrice, .item_largePrice {
-    display: flex;
-    justify-content: space-between;
+.item_smallPrice, .item_largePrice, .item_stdPrice {
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
 }
 
 .topping {
   display: flex;
+}
+
+.quantity_container {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.quantity_container input {
+  width: 12px;
+  font-size: 0.8em;
+  margin: 0px 2px;
+  text-align: center;
+}
+
+.plus, .minus {
+  font-size: 0.7em;
+}
+
+.topping_price {
+  display: flex;
+  margin-left: 10px;
 }
 
 /* CART*/
