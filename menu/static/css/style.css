@@ -2,6 +2,7 @@ body, html {
   padding: 0;
   margin: 0;
   font-family: 'Fresca', cursive;
+  overflow-x: hidden;
 }
 
 /* HEADER */
@@ -15,6 +16,7 @@ nav {
   position: fixed;
   width: 100%;
   top: 0;
+  z-index: 1000;
 }
 
 nav > div {
@@ -42,6 +44,8 @@ nav > div {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  padding: 10px;
+  margin-bottom: 50px;
 }
 
 .submenu_container {
@@ -52,16 +56,34 @@ nav > div {
 }
 
 .submenu_title {
+  font-size: 1.7em;
+  font-weight: bold;
+  margin: 30px 0px 10px 10px;
+  width: calc(100% - 40px);
+  border-bottom: 1px solid black;
 }
 
 .category_container {
   margin: 10px;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
   width: 280px;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px 0px #afafaf;
+  box-shadow: 0px 0px 15px 5px grey;
   background: black;
   color: #fff;
+  height: fit-content;
+  transition-property: all;
+  transition-duration: .5s;
+}
+
+.category_container:hover {
+  box-shadow: 0px 0px 7px 3px grey;
+  transform: translateY(2px);
+}
+
+.category_title {
+  font-size: 1.4em;
+  text-align: center;
 }
 
 .category_button {
@@ -69,7 +91,7 @@ nav > div {
 }
 
 .category_button input {
-  transform: translateY(34px);
+  transform: translateY(14px);
   padding: 5px 10px;
   background: #fff;
   border: none;
@@ -80,6 +102,13 @@ nav > div {
   color: #fb4a4a;
   height: 30px;
   width: 150px;
+  transition-property: all;
+  transition-duration: 2s;
+}
+
+.category_button input:hover {
+  color: #02b301;
+  box-shadow: 0px 0px 15px 5px grey;
 }
 
 .item_container {
@@ -90,7 +119,15 @@ nav > div {
 
 .toppings_container {
   background: #fe5252;
-  padding: 10px;
+  overflow: hidden;
+}
+
+.toppings_box {
+    padding: 10px;
+}
+
+.topping {
+  display: flex;
 }
 
 .sizes {
@@ -114,16 +151,13 @@ nav > div {
 .item {
   display: flex;
   justify-content: space-between;
+  margin: 2px 0px;
 }
 
 .item_smallPrice, .item_largePrice, .item_stdPrice {
   display: flex;
   justify-content: space-between;
   width: 80px;
-}
-
-.topping {
-  display: flex;
 }
 
 .quantity_container {

@@ -7,7 +7,7 @@
     <div class="submenu_container">
       {% for category in submenu.categories.all %}
         <div class="category_container">
-          <div class="">
+          <div class="category_title">
             {{ category }}
           </div>
           <div class="item_container">
@@ -43,7 +43,7 @@
                         <div class="plus">
                           <i class="fas fa-plus"></i>
                         </div>
-                        <input type="text" name="" value="0">
+                        <input type="text" name="" value="0" readonly>
                         <div class="minus">
                           <i class="fas fa-minus"></i>
                         </div>
@@ -56,7 +56,7 @@
                         <div class="plus">
                           <i class="fas fa-plus"></i>
                         </div>
-                        <input type="text" name="" value="0">
+                        <input type="text" name="" value="0" readonly>
                         <div class="minus">
                           <i class="fas fa-minus"></i>
                         </div>
@@ -66,36 +66,40 @@
                 </div>
               </div>
               {% if item.itemToppings.all %}
-                <div class="">EXTRAS</div>
                 <div class="toppings_container">
-                  {% for topping in item.itemToppings.all %}
-                    <div class="topping">
-                      <div class="topping_name">{{ topping.name }}</div>
-                      <div class="topping_price">
-                        {{ topping.price }}
-                        <input type="checkbox" name="" value="">
+                  <div class="toppings_box">
+                    <div class="">EXTRAS</div>
+                    {% for topping in item.itemToppings.all %}
+                      <div class="topping">
+                        <div class="topping_name">{{ topping.name }}</div>
+                        <div class="topping_price">
+                          {{ topping.price }}
+                          <input type="checkbox" name="" value="">
+                        </div>
                       </div>
-                    </div>
-                  {% endfor %}
+                    {% endfor %}
+                  </div>
                 </div>
               {% endif %}
             {% endif %}
           {% endfor %}
           </div>
           {% if category.categoryToppings.all %}
-            <div class="">TOPPINGS</div>
             <div class="toppings_container">
-              {% for topping in toppings %}
-                {% if topping.category == category %}
-                <div class="topping">
-                  <div class="topping_name">{{ topping.name }}</div>
-                  <div class="topping_price">
-                    {{ topping.price|default_if_none:"" }}
-                    <input type="checkbox" name="" value="">
+              <div class="toppings_box">
+                <div class="">TOPPINGS</div>
+                {% for topping in toppings %}
+                  {% if topping.category == category %}
+                  <div class="topping">
+                    <div class="topping_name">{{ topping.name }}</div>
+                    <div class="topping_price">
+                      {{ topping.price|default_if_none:"" }}
+                      <input type="checkbox" name="" value="">
+                    </div>
                   </div>
-                </div>
-                {% endif %}
-              {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              </div>
             </div>
           {% endif %}
           <div class="category_button">

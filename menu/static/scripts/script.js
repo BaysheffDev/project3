@@ -37,6 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
     cartOpen = false;
   }
 
+  // Add functionality to + button
+  document.querySelectorAll('.plus').forEach(plus => {
+    plus.addEventListener('click', function() {
+      console.log("plus");
+      let val = this.closest('.quantity_container').children[1].value;
+      val++;
+      this.closest('.quantity_container').children[1].value = val;
+    });
+  });
+  // Add functionality to - button
+  document.querySelectorAll('.minus').forEach(minus => {
+    minus.addEventListener('click', function() {
+      console.log("minus");
+      let val = this.closest('.quantity_container').children[1].value;
+      val--;
+      if(val >= 0) {
+        this.closest('.quantity_container').children[1].value = val;
+      }
+    });
+  });
+  // If user selects an item, expand the related toppings or extras
+  // document.querySelectorAll('.quantity_container input').forEach(qty => {
+  //   qty.addEventListener('change', function() {
+  //     console.log("qty");
+  //     let val = this.closest('.quantity_container').children[1].value;
+  //     val++;
+  //     this.closest('.quantity_container').children[1].value = val;
+  //   });
+  // });
+
 });
 
 // Trigger cart notifications
