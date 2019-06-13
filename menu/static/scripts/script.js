@@ -41,19 +41,42 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.plus').forEach(plus => {
     plus.addEventListener('click', function() {
       console.log("plus");
-      let val = this.closest('.quantity_container').children[1].value;
+      const qty = this.closest('.quantity_container').children[1];
+      let val = qty.value;
       val++;
-      this.closest('.quantity_container').children[1].value = val;
+      qty.value = val;
+      if (val === 1) {
+        const thisItem = this.closest('.item').querySelector('.item_overlay');
+        const otherItems = this.closest('.item_container').querySelectorAll('.item_overlay');
+        console.log(otherItems);
+        otherItems.forEach(item => {
+          item.classList.remove('hidden');
+          item.classList.add('active');
+        });
+        thisItem.classList.remove('active');
+        thisItem.classList.add('hidden');
+      }
     });
   });
   // Add functionality to - button
   document.querySelectorAll('.minus').forEach(minus => {
     minus.addEventListener('click', function() {
       console.log("minus");
-      let val = this.closest('.quantity_container').children[1].value;
+      const qty = this.closest('.quantity_container').children[1];
+      const item_quantities = this.closest('.price_container').querySelectorAll('input');
+      console.log(item_quantities[0].value);
+      let val = qty.value;
       val--;
-      if(val >= 0) {
-        this.closest('.quantity_container').children[1].value = val;
+      if (val >= 0) {
+        qty.value = val;
+      }
+      if (item_quantities[0].value == 0 && item_quantities[1].value == 0) {
+        const otherItems = this.closest('.item_container').querySelectorAll('.item_overlay');
+        console.log(otherItems);
+        otherItems.forEach(item => {
+          item.classList.remove('active');
+          item.classList.add('hidden');
+        });
       }
     });
   });

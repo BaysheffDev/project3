@@ -1,4 +1,4 @@
-<h1>Menu</h1>
+<h1 style=""> Pinocchio's Pizza <i class="fas fa-pizza-slice" style="transform: rotate(-60deg);"></i><i class="fas fa-pizza-slice"></i></h1>
 <div class="menu_container">
   {% for submenu in submenus %}
     <div class="submenu_title">
@@ -22,10 +22,11 @@
           {% for item in items %}
             {% if item.category == category %}
               <div class="item">
+                <div class="item_overlay hidden"></div>
                 <div class="item_name">{{ item.name }}</div>
                 <div class="price_container">
                   {% if category.sizes %}
-                    <div class="item_smallPrice">
+                    <div class="item_smallPrice price">
                       {{ item.smallPrice|default_if_none:"" }}
                       <div class="quantity_container">
                         <div class="plus">
@@ -37,7 +38,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="item_largePrice">
+                    <div class="item_largePrice price">
                       {{ item.largePrice|default_if_none:"" }}
                       <div class="quantity_container">
                         <div class="plus">
@@ -50,7 +51,7 @@
                       </div>
                     </div>
                   {% else %}
-                    <div class="item_stdPrice">
+                    <div class="item_stdPrice price">
                       {{ item.stdPrice|default_if_none:"" }}
                       <div class="quantity_container">
                         <div class="plus">
