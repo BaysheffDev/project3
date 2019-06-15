@@ -24,7 +24,7 @@ nav > div {
 }
 
 h1 {
-  margin: 20px 0 0 20px;
+  margin: 30px 20px 0 20px;
   text-align: center;
 }
 
@@ -64,15 +64,15 @@ h1 {
 .submenu_title {
   font-size: 1.7em;
   font-weight: bold;
-  margin: 10px;
+  margin: 0px 10px 10px 10px;
   width: calc(100% - 40px);
   border-bottom: 1px solid black;
+  box-shadow: 0px 6px 6px -7px grey;
 }
 
 .category_container {
-  margin: 10px;
-  padding: 20px 20px 0px 20px;
-  width: 280px;
+  margin: 10px 10px 30px 10px;
+  width: 320px;
   border-radius: 10px;
   box-shadow: 0px 0px 15px 5px grey;
   background: black;
@@ -80,6 +80,30 @@ h1 {
   height: fit-content;
   transition-property: all;
   transition-duration: .5s;
+  position: relative;
+}
+
+.category_box {
+  overflow: hidden;
+  padding: 5px 20px 0px 20px;
+  position: relative;
+}
+
+.house_favourite {
+  position: absolute;
+  transform: rotate(-40deg);
+  text-align: center;
+  top: 14px;
+  left: -23px;
+  font-size: 0.7em;
+  padding: 5px 20px;
+  background: #ffba19;
+  color: black;
+  box-shadow: 0px 0px 8px 2px #ff7cfe;
+}
+
+.house_favourite:hover {
+  background: #fffa19;
 }
 
 .category_container:hover {
@@ -90,6 +114,7 @@ h1 {
 .category_title {
   font-size: 1.4em;
   text-align: center;
+  margin-bottom: 5px;
 }
 
 .category_button {
@@ -125,15 +150,31 @@ h1 {
 
 .toppings_container {
   background: #fe5252;
+}
+
+.item_toppings {
+  height: 0;
   overflow: hidden;
+  transition: height 0.5s;
 }
 
 .toppings_box {
     padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.toppings_title, .extras_title {
+    width: 100%;
+    margin-bottom: 5px;
+    text-decoration: underline;
 }
 
 .topping {
   display: flex;
+  width: 48%;
+  justify-content: space-between;
 }
 
 .sizes {
@@ -194,7 +235,6 @@ h1 {
 
 .topping_price {
   display: flex;
-  margin-left: 10px;
 }
 
 /* CART*/
@@ -303,12 +343,27 @@ h1 {
 
 /* FOOTER */
 .footer {
+  position: relative;
   display: flex;
   background: linear-gradient(#00b300, #308000);
   height: 180px;
   justify-content: center;
   align-items: center;
   color: #fff;
+}
+
+.night_mode {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.night_mode_text {
+  margin-right: 10px;
 }
 
 .signature {
@@ -321,6 +376,10 @@ h1 {
   font-size: 1.4em;
 }
 
+.icons a {
+  text-decoration: none;
+}
+
 .icon_container {
   margin: 0 15px;
   background: black;
@@ -331,10 +390,39 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
 }
 
 /***************************/
-/* Functional classes */
+/* Asset Classes */
+.photo {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 160px;
+}
+
+.regular {
+  background-image: url("/static/assets/regular pizza.png");
+}
+.sicilian {
+  background-image: url("/static/assets/sicilian pizza.png");
+}
+.subs {
+  background-image: url("/static/assets/subs.png");
+}
+.pasta {
+  background-image: url("/static/assets/pasta.png");
+}
+.salads {
+  background-image: url("/static/assets/salads.png");
+}
+.dinner {
+  background-image: url("/static/assets/dinner platters.png");
+}
+
+/***************************/
+/* Functional Classes */
 
 /* GENERAL */
 .active {
@@ -350,4 +438,68 @@ h1 {
 }
 .cart_icon_active {
   color: #fff;
+}
+
+/* Toggle switch code from www.w3schools.com */
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #b7b7b7;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #000000;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
