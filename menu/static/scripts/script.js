@@ -13,12 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nightMode.checked === false) {
       document.querySelector('body').style.background = "black";
       document.querySelector('body').style.color = "white";
-      console.log('night');
     }
     else {
       document.querySelector('body').style.background = "white";
       document.querySelector('body').style.color = "black";
-      console.log('day');
     }
   }
 
@@ -86,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.minus').forEach(minus => {
     minus.addEventListener('click', function() {
       const qty = this.closest('.quantity_container').children[1];
-      const item_quantities = this.closest('.price_container').querySelectorAll('input');
+      const itemQuantities = this.closest('.price_container').querySelectorAll('input');
       let val = qty.value;
       val--;
       if (val >= 0) {
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return true;
       }
-      if (checkQtys(item_quantities)) {
+      if (checkQtys(itemQuantities)) {
         const otherItems = this.closest('.item_container').querySelectorAll('.item_overlay');
         otherItems.forEach(item => {
           item.classList.remove('active');
@@ -116,10 +114,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Trigger cart notifications
+// Trigger cart notification
 function cartNotification() {
   notification = document.querySelector('.cart_notification_container');
   notification.classList.remove('cart_notification_animation');
   void notification.offsetWidth;
   notification.classList.add('cart_notification_animation');
 }
+
+// Trigger cart notification and add items & toppings to cart
+function addToCart(el) {
+  let changes = 0;
+  const card = el.closest('.category_container');
+  const items = card.querySelectorAll('input[type=text]');
+  const categoryToppings = card.querySelectorAll('.category_toppings input[type=checkbox]');
+  const overlays = card.querySelectorAll('.item_overlay');
+
+  const itemToppings = card.querySelectorAll('.item_toppings input[type=checkbox]');
+
+  items.forEach(item => {
+    const qty = item.value;
+    if (qty > 0) {
+      const itemCategory = item.closest('.category_box').querySelector('.category_title').innerHTML.trim().split(' ')[0];
+      document.querySelector('.cart_' + itemCategory).classList.remove('hidden');
+      console.log(itemCategory);
+      const cartItem = item.closest('.item').querySelector('.item_name').innerHTML;
+      // Add item details template to cart
+      const cartItemSize = item.closest('.price').className.split(' ')[0];
+      const cartItemQty = qty;
+      const cartItemPrice = item.closest('.price').querySelector('.price_box').innerHTML;
+      document.querySelector('.cart_' + itemCategory).innerHTML += cartItemTemplate({
+        "name": cartItem,
+        "size": cartItemSize,
+        "qty": cartItemQty,
+        "price": cartItemPrice,
+      });
+      // Update order total
+      const total = document.querySelector('.cart_total_amount');
+      const subtotal = parseFloat(cartItemPrice) * cartItemQty;
+      total.innerHTML = Number(parseFloat(total.innerHTML) + subtotal).toFixed(2);
+      // Reset item value on category card
+      item.value = 0;
+      changes++;
+    }
+  });
+  categoryToppings.forEach(topping => {
+    if (topping.checked === true && changes) {
+      // TODO: remove and put correct code here
+      const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
+      document.querySelector('.cart_contents').innerHTML += name + " ";
+
+      topping.checked = false;
+    }
+  });
+  overlays.forEach(overlay => {
+    overlay.classList.remove('active');
+    overlay.classList.add('hidden');
+  });
+  // Close open item toppings boxes if there are any
+  const itemToppingsBoxes = el.closest('.category_container').querySelectorAll('.item_toppings');
+  itemToppingsBoxes.forEach(box => {
+    box.style.height = "0px";
+  });
+  // Trigger cart notification if there were items to add to cart
+  changes ? cartNotification() : console.log("No items selected");
+}
+
+// Remove item from cart
+function removeItem(el) {
+  const item = el.closest('.cart_item_container');
+  item.parentNode.removeChild(item);
+  const total = document.querySelector('.cart_total_amount');
+  const itemAmount = item.querySelector('.cart_item_price').innerHTML;
+  const itemQty = item.querySelector('.cart_item_qty').innerHTML.substr(1);
+  const subtotal = parseFloat(itemAmount) * itemQty;
+  total.innerHTML = Number(parseFloat(total.innerHTML) - subtotal).toFixed(2);
+}
+
+// Handelbar Templates
+const cartItemTemplate = Handlebars.compile(
+  `<div class="cart_item_container">
+    <div class="cart_item">
+      <div class="cart_item_remove" onclick="removeItem(this)"><i class="fas fa-times-circle"></i></div>
+      <div class="cart_item_name">{{ name }}</div>
+      <div class="cart_item_size">{{ size }}</div>
+      <div class="cart_item_qty">x{{ qty }}</div>
+      <div class="cart_item_price">{{ price }}</div>
+    </div>
+    <div class="cart_item_toppings">{{ toppings }}</div>
+  </div>`
+);
+
+const cartCategoryTemplate = Handlebars.compile (
+  `<div class="cart_category_container">
+    <div class="cart_category_title">{{ name }}</div>
+  </div>`
+);

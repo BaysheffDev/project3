@@ -13,8 +13,31 @@
     </div>
   </div>
   <div class="cart_contents hidden">
-    <div class="cart_item">
-      Cart Item
+    <div class="cart_title">
+      Cart
+    </div>
+    <div class="cart_headings">
+      <div class="cart_heading_item">Item</div>
+      <div class="cart_heading_size">Size</div>
+      <div class="cart_heading_qty">Qty</div>
+      <div class="cart_heading_price">Price</div>
+    </div>
+    {% for category in categories %}
+      <div class="cart_category_container cart_{{category}} hidden">
+        <div class="cart_category_title">
+          {{ category }}
+        </div>
+      </div>
+    {% endfor %}
+    <div class="cart_summary">
+      <div class="cart_total">Total:</div>
+      <div class="cart_total_price">
+        <div class="cart_total_sybmol">$</div>
+        <div class="cart_total_amount">0</div>
+      </div>
+    </div>
+    <div class="place_order_container">
+      <button type="button" name="button">Place Order</button>
     </div>
   </div>
 </div>

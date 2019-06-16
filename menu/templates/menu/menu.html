@@ -42,13 +42,15 @@
                       <div class="price_container">
                         {% if category.sizes %}
                           {% if item.smallPrice != None %}
-                            <div class="item_smallPrice price">
-                              {{ item.smallPrice }}
+                            <div class="Sml price">
+                              <div class="price_box">
+                                {{ item.smallPrice }}
+                              </div>
                               <div class="quantity_container">
                                 <div class="plus">
                                   <i class="fas fa-plus"></i>
                                 </div>
-                                <input type="text" name="" value=0>
+                                <input type="text" name="" value=0 readonly>
                                 <div class="minus">
                                   <i class="fas fa-minus"></i>
                                 </div>
@@ -56,8 +58,10 @@
                             </div>
                           {% endif %}
                           {% if item.largePrice != None %}
-                            <div class="item_largePrice price">
-                              {{ item.largePrice }}
+                            <div class="Lg price">
+                              <div class="price_box">
+                                {{ item.largePrice }}
+                              </div>
                               <div class="quantity_container">
                                 <div class="plus">
                                   <i class="fas fa-plus"></i>
@@ -70,8 +74,10 @@
                             </div>
                           {% endif %}
                         {% else %}
-                          <div class="item_stdPrice price">
-                            {{ item.stdPrice|default_if_none:"" }}
+                          <div class="Std price">
+                            <div class="price_box">
+                              {{ item.stdPrice|default_if_none:"" }}
+                            </div>
                             <div class="quantity_container">
                               <div class="plus">
                                 <i class="fas fa-plus"></i>
@@ -93,8 +99,10 @@
                             <div class="topping">
                               <div class="topping_name">{{ topping.name }}</div>
                               <div class="topping_price">
-                                {{ topping.price }}
-                                <input type="checkbox" name="" value=0>
+                                <div class="price_box">
+                                  {{ topping.price }}
+                                </div>
+                                <input type="checkbox" name="" value=0 readonly>
                               </div>
                             </div>
                           {% endfor %}
@@ -114,8 +122,10 @@
                       <div class="topping">
                         <div class="topping_name">{{ topping.name }}</div>
                         <div class="topping_price">
-                          {{ topping.price|default_if_none:"" }}
-                          <input type="checkbox" name="" value=0>
+                          <div class="price_box">
+                            {{ topping.price|default_if_none:"" }}
+                          </div>
+                          <input type="checkbox" name="" value=0 readonly>
                         </div>
                       </div>
                       {% endif %}
@@ -125,7 +135,7 @@
               {% endif %}
             </div>
             <div class="category_button">
-              <input onclick="cartNotification()" type="button" name="" value="Add to Cart"></input>
+              <input onclick="addToCart(this)" type="button" name="" value="Add to Cart"></input>
             </div>
           </div>
         {% if category|stringformat:"s" == "Salads" %}
