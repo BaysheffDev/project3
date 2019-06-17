@@ -130,41 +130,64 @@ function addToCart(el) {
   const categoryToppings = card.querySelectorAll('.category_toppings input[type=checkbox]');
   const overlays = card.querySelectorAll('.item_overlay');
 
-  const itemToppings = card.querySelectorAll('.item_toppings input[type=checkbox]');
+  let toppings = "";
+  let toppingPrices = [];
+  // If category toppings exist, add selected ones to a string, and uncheck them
+  if (categoryToppings !== null) {
+    categoryToppings.forEach(topping => {
+      if (topping.checked === true) {
+        const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
+        toppings += name + " ";
+        topping.checked = false;
+      }
+    });
+  }
 
   items.forEach(item => {
     const qty = item.value;
     if (qty > 0) {
       const itemCategory = item.closest('.category_box').querySelector('.category_title').innerHTML.trim().split(' ')[0];
       document.querySelector('.cart_' + itemCategory).classList.remove('hidden');
-      console.log(itemCategory);
       const cartItem = item.closest('.item').querySelector('.item_name').innerHTML;
       // Add item details template to cart
       const cartItemSize = item.closest('.price').className.split(' ')[0];
       const cartItemQty = qty;
       const cartItemPrice = item.closest('.price').querySelector('.price_box').innerHTML;
+      // Check if any item toppings selected an dadd them to cart with item
+      if (toppings === "") {
+        const itemToppings = item.closest('.item_box').querySelectorAll('.topping');
+        itemToppings.forEach(topping => {
+          const toppingChecked = topping.querySelector(".topping_price input").checked;
+          if (toppingChecked) {
+            const toppingName = topping.querySelector(".topping_name").innerHTML;
+            const toppingPrice = topping.querySelector(".topping_price .price_box").innerHTML;
+            toppingPrices.push(Number(parseFloat(toppingPrice)).toFixed(2));
+            toppings += toppingName + " " + toppingPrice + " ";
+            toppingChecked.checked = false;
+          }
+        });
+      }
       document.querySelector('.cart_' + itemCategory).innerHTML += cartItemTemplate({
         "name": cartItem,
         "size": cartItemSize,
         "qty": cartItemQty,
         "price": cartItemPrice,
+        "toppings": toppings,
       });
       // Update order total
       const total = document.querySelector('.cart_total_amount');
-      const subtotal = parseFloat(cartItemPrice) * cartItemQty;
+      let subtotal = parseFloat(cartItemPrice) * cartItemQty;
+      for (let i = 0, len = toppingPrices.length; i < len; i++) {
+        subtotal += parseFloat(toppingPrices[i]);
+      }
       total.innerHTML = Number(parseFloat(total.innerHTML) + subtotal).toFixed(2);
       // Reset item value on category card
       item.value = 0;
       changes++;
-    }
-  });
-  categoryToppings.forEach(topping => {
-    if (topping.checked === true && changes) {
-      // TODO: remove and put correct code here
-      const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
-      document.querySelector('.cart_contents').innerHTML += name + " ";
 
-      topping.checked = false;
+      // Reset toppings and topping prices
+      toppings = "";
+      toppingPrices = [];
     }
   });
   overlays.forEach(overlay => {
