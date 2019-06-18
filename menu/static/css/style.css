@@ -418,6 +418,7 @@ h1 {
 .cart_item_toppings {
   margin-left: 20px;
   font-size: 0.7em;
+  width: 55%;
 }
 
 .cart_item_name {

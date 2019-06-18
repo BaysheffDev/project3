@@ -106,6 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
           item.classList.add('hidden');
         });
         if (toppings !== null) {
+          const boxToppings = toppings.querySelectorAll('input');
+          boxToppings.forEach(topping => {
+            topping.checked = false;
+          });
           toppings.style.height = "0px";
         }
       }
@@ -157,30 +161,31 @@ function addToCart(el) {
       if (toppings === "") {
         const itemToppings = item.closest('.item_box').querySelectorAll('.topping');
         itemToppings.forEach(topping => {
-          const toppingChecked = topping.querySelector(".topping_price input").checked;
-          if (toppingChecked) {
+          const toppingChecked = topping.querySelector(".topping_price input");
+          if (toppingChecked.checked) {
             const toppingName = topping.querySelector(".topping_name").innerHTML;
             const toppingPrice = topping.querySelector(".topping_price .price_box").innerHTML;
             toppingPrices.push(Number(parseFloat(toppingPrice)).toFixed(2));
             toppings += toppingName + " " + toppingPrice + " ";
-            toppingChecked.checked = false;
           }
         });
       }
-      document.querySelector('.cart_' + itemCategory).innerHTML += cartItemTemplate({
-        "name": cartItem,
-        "size": cartItemSize,
-        "qty": cartItemQty,
-        "price": cartItemPrice,
-        "toppings": toppings,
-      });
       // Update order total
       const total = document.querySelector('.cart_total_amount');
       let subtotal = parseFloat(cartItemPrice) * cartItemQty;
       for (let i = 0, len = toppingPrices.length; i < len; i++) {
         subtotal += parseFloat(toppingPrices[i]);
       }
+      let cartItemSubtotal = Number(subtotal).toFixed(2);
       total.innerHTML = Number(parseFloat(total.innerHTML) + subtotal).toFixed(2);
+      // Add item template to cart
+      document.querySelector('.cart_' + itemCategory).innerHTML += cartItemTemplate({
+        "name": cartItem,
+        "size": cartItemSize,
+        "qty": cartItemQty,
+        "price": cartItemSubtotal,
+        "toppings": toppings,
+      });
       // Reset item value on category card
       item.value = 0;
       changes++;
@@ -197,6 +202,10 @@ function addToCart(el) {
   // Close open item toppings boxes if there are any
   const itemToppingsBoxes = el.closest('.category_container').querySelectorAll('.item_toppings');
   itemToppingsBoxes.forEach(box => {
+    const boxToppings = box.querySelectorAll('input');
+    boxToppings.forEach(topping => {
+      topping.checked = false;
+    });
     box.style.height = "0px";
   });
   // Trigger cart notification if there were items to add to cart
@@ -206,12 +215,18 @@ function addToCart(el) {
 // Remove item from cart
 function removeItem(el) {
   const item = el.closest('.cart_item_container');
+  const itemCategory = item.closest('.cart_category_container');
   item.parentNode.removeChild(item);
   const total = document.querySelector('.cart_total_amount');
   const itemAmount = item.querySelector('.cart_item_price').innerHTML;
   const itemQty = item.querySelector('.cart_item_qty').innerHTML.substr(1);
   const subtotal = parseFloat(itemAmount) * itemQty;
   total.innerHTML = Number(parseFloat(total.innerHTML) - subtotal).toFixed(2);
+  const itemCategoryItems = itemCategory.querySelectorAll('.cart_item_container');
+  console.log(itemCategoryItems);
+  if (itemCategoryItems.length === 0) {
+    itemCategory.classList.add('hidden');
+  }
 }
 
 // Handelbar Templates
