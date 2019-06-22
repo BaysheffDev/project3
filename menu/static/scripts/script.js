@@ -130,11 +130,12 @@ function cartNotification() {
 function addToCart(el) {
   let changes = 0;
   const card = el.closest('.category_container');
-  const items = card.querySelectorAll('input[type=text]');
+  const items = card.querySelectorAll('input[type="text"]');
   const categoryToppings = card.querySelectorAll('.category_toppings input[type=checkbox]');
   const overlays = card.querySelectorAll('.item_overlay');
 
   let toppings = "";
+  let toppingNames = [];
   let toppingPrices = [];
   // If category toppings exist, add selected ones to a string, and uncheck them
   if (categoryToppings !== null) {
@@ -150,8 +151,10 @@ function addToCart(el) {
   items.forEach(item => {
     const qty = item.value;
     if (qty > 0) {
-      const itemCategory = item.closest('.category_box').querySelector('.category_title').innerHTML.trim().split(' ')[0];
-      document.querySelector('.cart_' + itemCategory).classList.remove('hidden');
+      const itemCategoryName = item.closest('.category_box').querySelector('.category_title').innerHTML.trim().split(' ')[0];
+      document.querySelector('.cart_' + itemCategoryName).classList.remove('hidden');
+      // Cart Category container
+      const itemCategory = document.querySelector('.cart_' + itemCategoryName);
       const cartItem = item.closest('.item').querySelector('.item_name').innerHTML;
       // Add item details template to cart
       const cartItemSize = item.closest('.price').className.split(' ')[0];
@@ -166,26 +169,76 @@ function addToCart(el) {
             const toppingName = topping.querySelector(".topping_name").innerHTML;
             const toppingPrice = topping.querySelector(".topping_price .price_box").innerHTML;
             toppingPrices.push(Number(parseFloat(toppingPrice)).toFixed(2));
-            toppings += toppingName + " " + toppingPrice + " ";
+            toppingNames.push(toppingName);
+            toppings += "<div class='cart_item_toppings_name'>" + toppingName + " </div>" + "<div class='cart_item_toppings_price'>" + toppingPrice + " </div>";
           }
         });
       }
-      // Update order total
-      const total = document.querySelector('.cart_total_amount');
-      let subtotal = parseFloat(cartItemPrice) * cartItemQty;
-      for (let i = 0, len = toppingPrices.length; i < len; i++) {
-        subtotal += parseFloat(toppingPrices[i]);
+
+      // Check if same item and toppings already exist in cart
+      let matchedItem = false;
+      let newItemQty = 0;
+      const itemCategoryItems = itemCategory.querySelectorAll('.cart_item_container');
+      if (itemCategoryItems.length > 0) {
+        itemCategoryItems.forEach(item => {
+          const existingCartItem = item.querySelector('.cart_item_name').innerHTML;
+          const existingCartItemSize = item.querySelector('.cart_item_size').innerHTML;
+          if (existingCartItem === cartItem && existingCartItemSize === cartItemSize) {
+            console.log("names and sizes match");
+            matchedItem = true;
+            const cartItemToppings = item.querySelectorAll('.cart_item_toppings_name');
+            let counter = 0;
+            if (toppings !== "") {
+              console.log("toppings !== ''");
+              cartItemToppings.forEach(topping => {
+                if (topping.innerHTML.trim() != toppingNames[counter]) {
+                  matchedItem = false;
+                }
+                counter++;
+              });
+            }
+            if (matchedItem) {
+              matchedItem = item;
+              newItemQty = parseInt(item.querySelector('.cart_item_qty').innerHTML.slice(1));
+            }
+          }
+        });
       }
-      let cartItemSubtotal = Number(subtotal).toFixed(2);
-      total.innerHTML = Number(parseFloat(total.innerHTML) + subtotal).toFixed(2);
-      // Add item template to cart
-      document.querySelector('.cart_' + itemCategory).innerHTML += cartItemTemplate({
-        "name": cartItem,
-        "size": cartItemSize,
-        "qty": cartItemQty,
-        "price": cartItemSubtotal,
-        "toppings": toppings,
-      });
+
+      // If item matched existing item in cart, update qty and prices
+      if (matchedItem !== false) {
+        const total = document.querySelector('.cart_total_amount');
+        const matchedItemQty = matchedItem.querySelector('.cart_item_qty');
+        const newQty = parseInt(matchedItemQty.innerHTML.slice(1)) + newItemQty;
+        const subtotal = matchedItem.querySelector('.cart_item_price');
+        const oneItemSubtitle = parseFloat(subtotal.innerHTML) / parseFloat(matchedItemQty.innerHTML.slice(1));
+        matchedItemQty.innerHTML = newQty + "x";
+        const newSubtotal = parseFloat(oneItemSubtitle * newQty);
+        const addToTotal = newSubtotal - parseFloat(subtotal.innerHTML);
+        subtotal.innerHTML = Number(newSubtotal).toFixed(2);
+        console.log(total.innerHTML);
+        console.log(subtotal.innerHTML);
+        console.log(addToTotal);
+        total.innerHTML = Number(parseFloat(total.innerHTML) + addToTotal).toFixed(2);
+      }
+      else {
+        const total = document.querySelector('.cart_total_amount');
+        let subtotal = parseFloat(cartItemPrice) * cartItemQty;
+        for (let i = 0, len = toppingPrices.length; i < len; i++) {
+          subtotal += parseFloat(toppingPrices[i]);
+        }
+        let cartItemSubtotal = Number(subtotal).toFixed(2);
+        total.innerHTML = Number(parseFloat(total.innerHTML) + subtotal).toFixed(2);
+        // Add item template to cart
+        document.querySelector('.cart_' + itemCategoryName).innerHTML += cartItemTemplate({
+          "name": cartItem,
+          "size": cartItemSize,
+          "qty": cartItemQty,
+          "price": cartItemSubtotal,
+          "toppings": toppings,
+        });
+      }
+
       // Reset item value on category card
       item.value = 0;
       changes++;
@@ -220,10 +273,9 @@ function removeItem(el) {
   const total = document.querySelector('.cart_total_amount');
   const itemAmount = item.querySelector('.cart_item_price').innerHTML;
   const itemQty = item.querySelector('.cart_item_qty').innerHTML.substr(1);
-  const subtotal = parseFloat(itemAmount) * itemQty;
+  const subtotal = parseFloat(itemAmount);
   total.innerHTML = Number(parseFloat(total.innerHTML) - subtotal).toFixed(2);
   const itemCategoryItems = itemCategory.querySelectorAll('.cart_item_container');
-  console.log(itemCategoryItems);
   if (itemCategoryItems.length === 0) {
     itemCategory.classList.add('hidden');
   }
@@ -239,7 +291,7 @@ const cartItemTemplate = Handlebars.compile(
       <div class="cart_item_qty">x{{ qty }}</div>
       <div class="cart_item_price">{{ price }}</div>
     </div>
-    <div class="cart_item_toppings">{{ toppings }}</div>
+    <div class="cart_item_toppings">{{{ toppings }}}</div>
   </div>`
 );
 
