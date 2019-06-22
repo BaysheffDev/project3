@@ -177,18 +177,17 @@ function addToCart(el) {
 
       // Check if same item and toppings already exist in cart
       let matchedItem = false;
-      let newItemQty = 0;
       const itemCategoryItems = itemCategory.querySelectorAll('.cart_item_container');
       if (itemCategoryItems.length > 0) {
-        itemCategoryItems.forEach(item => {
-          const existingCartItem = item.querySelector('.cart_item_name').innerHTML;
-          const existingCartItemSize = item.querySelector('.cart_item_size').innerHTML;
+        itemCategoryItems.forEach(item2 => {
+          const existingCartItem = item2.querySelector('.cart_item_name').innerHTML;
+          const existingCartItemSize = item2.querySelector('.cart_item_size').innerHTML;
           if (existingCartItem === cartItem && existingCartItemSize === cartItemSize) {
             console.log("names and sizes match");
             matchedItem = true;
-            const cartItemToppings = item.querySelectorAll('.cart_item_toppings_name');
+            const cartItemToppings = item2.querySelectorAll('.cart_item_toppings_name');
             let counter = 0;
-            if (toppings !== "") {
+            if (toppingNames.length !== 0) {
               console.log("toppings !== ''");
               cartItemToppings.forEach(topping => {
                 if (topping.innerHTML.trim() != toppingNames[counter]) {
@@ -198,30 +197,15 @@ function addToCart(el) {
               });
             }
             if (matchedItem) {
-              matchedItem = item;
-              newItemQty = parseInt(item.querySelector('.cart_item_qty').innerHTML.slice(1));
+              matchedItem = item2;
             }
           }
         });
       }
 
       // If item matched existing item in cart, update qty and prices
-      if (matchedItem !== false) {
-        const total = document.querySelector('.cart_total_amount');
-        const matchedItemQty = matchedItem.querySelector('.cart_item_qty');
-        const newQty = parseInt(matchedItemQty.innerHTML.slice(1)) + newItemQty;
-        const subtotal = matchedItem.querySelector('.cart_item_price');
-        const oneItemSubtitle = parseFloat(subtotal.innerHTML) / parseFloat(matchedItemQty.innerHTML.slice(1));
-        matchedItemQty.innerHTML = newQty + "x";
-        const newSubtotal = parseFloat(oneItemSubtitle * newQty);
-        const addToTotal = newSubtotal - parseFloat(subtotal.innerHTML);
-        subtotal.innerHTML = Number(newSubtotal).toFixed(2);
-        console.log(total.innerHTML);
-        console.log(subtotal.innerHTML);
-        console.log(addToTotal);
-        total.innerHTML = Number(parseFloat(total.innerHTML) + addToTotal).toFixed(2);
-      }
-      else {
+      // Else add new item and toppings to cart
+      if (!matchedItem) {
         const total = document.querySelector('.cart_total_amount');
         let subtotal = parseFloat(cartItemPrice) * cartItemQty;
         for (let i = 0, len = toppingPrices.length; i < len; i++) {
@@ -238,6 +222,39 @@ function addToCart(el) {
           "toppings": toppings,
         });
       }
+      else {
+        const total = document.querySelector('.cart_total_amount');
+        const matchedItemName = matchedItem.querySelector('.cart_item_name').innerHTML;
+        const matchedItemSize = matchedItem.querySelector('.cart_item_size').innerHTML;
+        const matchedItemQty = matchedItem.querySelector('.cart_item_qty').innerHTML.slice(1);
+        const matchedItemSubtotal = matchedItem.querySelector('.cart_item_price').innerHTML;
+        const newQty = parseInt(matchedItemQty) + parseInt(qty);
+        const oneItemSubtotal = parseFloat(matchedItemSubtotal) / parseInt(matchedItemQty);
+        console.log("oneItemSubtotal: " + oneItemSubtotal);
+        console.log(total);
+        console.log(matchedItemQty);
+        console.log(newQty);
+        console.log(matchedItemSubtotal);
+        matchedItemQty.innerHTML = newQty + "x";
+        const newSubtotal = parseFloat(oneItemSubtotal) * parseFloat(newQty);
+        const subtotal = Number(newSubtotal).toFixed(2);
+        const addToTotal = newSubtotal - parseFloat(matchedItemSubtotal);
+        console.log("newSubtotal: " + newSubtotal);
+        console.log("subtotal: " + subtotal);
+        console.log("total.innerHTML: " + total.innerHTML);
+        console.log("oldSubtotal.innerHTML: " + matchedItemSubtotal);
+        console.log("addToTotal: " + addToTotal);
+
+        total.innerHTML = Number(parseFloat(total.innerHTML) + addToTotal).toFixed(2);
+        matchedItem.parentNode.removeChild(matchedItem);
+        document.querySelector('.cart_' + itemCategoryName).innerHTML += cartItemTemplate({
+          "name": matchedItemName,
+          "size": matchedItemSize,
+          "qty": newQty,
+          "price": subtotal,
+          "toppings": toppings,
+        });
+      }
 
       // Reset item value on category card
       item.value = 0;
@@ -245,7 +262,7 @@ function addToCart(el) {
 
       // Reset toppings and topping prices
       toppings = "";
-      toppingPrices = [];
+      toppingPrices.length = 0;;
     }
   });
   overlays.forEach(overlay => {
@@ -269,10 +286,10 @@ function addToCart(el) {
 function removeItem(el) {
   const item = el.closest('.cart_item_container');
   const itemCategory = item.closest('.cart_category_container');
-  item.parentNode.removeChild(item);
   const total = document.querySelector('.cart_total_amount');
   const itemAmount = item.querySelector('.cart_item_price').innerHTML;
-  const itemQty = item.querySelector('.cart_item_qty').innerHTML.substr(1);
+  const itemQty = item.querySelector('.cart_item_qty').innerHTML.slice(1);
+  item.parentNode.removeChild(item);
   const subtotal = parseFloat(itemAmount);
   total.innerHTML = Number(parseFloat(total.innerHTML) - subtotal).toFixed(2);
   const itemCategoryItems = itemCategory.querySelectorAll('.cart_item_container');
