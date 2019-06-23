@@ -142,7 +142,7 @@ function addToCart(el) {
     categoryToppings.forEach(topping => {
       if (topping.checked === true) {
         const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
-        toppings += name + " ";
+        toppings += "<div class='cart_item_toppings_name'>" + name + " </div>";
         topping.checked = false;
       }
     });
@@ -230,20 +230,10 @@ function addToCart(el) {
         const matchedItemSubtotal = matchedItem.querySelector('.cart_item_price').innerHTML;
         const newQty = parseInt(matchedItemQty) + parseInt(qty);
         const oneItemSubtotal = parseFloat(matchedItemSubtotal) / parseInt(matchedItemQty);
-        console.log("oneItemSubtotal: " + oneItemSubtotal);
-        console.log(total);
-        console.log(matchedItemQty);
-        console.log(newQty);
-        console.log(matchedItemSubtotal);
         matchedItemQty.innerHTML = newQty + "x";
         const newSubtotal = parseFloat(oneItemSubtotal) * parseFloat(newQty);
         const subtotal = Number(newSubtotal).toFixed(2);
         const addToTotal = newSubtotal - parseFloat(matchedItemSubtotal);
-        console.log("newSubtotal: " + newSubtotal);
-        console.log("subtotal: " + subtotal);
-        console.log("total.innerHTML: " + total.innerHTML);
-        console.log("oldSubtotal.innerHTML: " + matchedItemSubtotal);
-        console.log("addToTotal: " + addToTotal);
 
         total.innerHTML = Number(parseFloat(total.innerHTML) + addToTotal).toFixed(2);
         matchedItem.parentNode.removeChild(matchedItem);
@@ -280,6 +270,31 @@ function addToCart(el) {
   });
   // Trigger cart notification if there were items to add to cart
   changes ? cartNotification() : console.log("No items selected");
+
+  // Order Confirmation
+  // Hide order confirmation when overlay clicked
+  document.querySelector('.order_confirmation_overlay').onclick = (e) => {
+    document.querySelector('.order_confirmation_overlay').classList.add('hidden');
+    document.querySelector('.order_confirmation_container').classList.add('hidden');
+  }
+  // Hide order confirmation box when button clicked
+  document.querySelector('.order_confirmation_form').onsubmit = () => {
+    // Validate name entry
+    name = document.querySelector('#order_name').value;
+    const letters = /^[A-Za-z]+$/;
+    if (!(name.match(letters))) {
+      document.querySelector('.order_confirmation_error').innerHTML = "Name must be letters only";
+    }
+    else if (name.length < 2) {
+     document.querySelector('.order_confirmation_error').innerHTML = "Name must be at least 2 characters";
+    }
+    else {
+     console.log("success");
+     document.querySelector('.order_confirmation_overlay').classList.add('hidden');
+     document.querySelector('.order_confirmation_container').classList.add('hidden');
+    }
+    return false;
+  }
 }
 
 // Remove item from cart
@@ -298,7 +313,56 @@ function removeItem(el) {
   }
 }
 
-// Handelbar Templates
+// Place order
+function placeOrder() {
+  // Check if any items in cart
+  const itemsCheck = document.querySelectorAll('.cart_item_container');
+  if (itemsCheck.length === 0) {
+    console.log("no items in cart");
+  }
+  else {
+    orderItems = {};
+    categories = document.querySelectorAll('.cart_category_title');
+    categories.forEach(category => {
+      orderItems[category.innerHTML] = [];
+    });
+    // Get details of items in cart ready to send to backend
+    const items = itemsCheck;
+    for (let i = 0, len = items.length; i < len; i++) {
+      console.log(items[i]);
+      const category = items[i].closest('.cart_category_container').querySelector('.cart_category_title').innerHTML;
+      const itemName = items[i].querySelector('.cart_item_name').innerHTML;
+      const itemSize = items[i].querySelector('.cart_item_size').innerHTML;
+      const itemQty = items[i].querySelector('.cart_item_qty').innerHTML.slice(1);
+      // Add item object to category array
+      orderItems[category].push({
+        "name": "",
+        "size": "",
+        "qty": "",
+        "toppings": [],
+      });
+      // Add item name, size, qty and toppings to object
+      orderItems[category][i].name = itemName;
+      orderItems[category][i].size = itemSize;
+      orderItems[category][i].qty = itemQty;
+      const itemToppings = items[i].querySelectorAll('.cart_item_toppings_name');
+      itemToppings.forEach(topping => {
+        orderItems[category][i].toppings.push(topping.innerHTML.trim());
+      });
+    }
+    console.log("confirm");
+    document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
+    document.querySelector('.order_confirmation_container').classList.remove('hidden');
+  }
+}
+
+//
+//////
+////////////
+///////////////////
+//////////////////////////
+////// Handelbar Templates
+//
 const cartItemTemplate = Handlebars.compile(
   `<div class="cart_item_container">
     <div class="cart_item">

@@ -1,0 +1,24 @@
+<div class="order_confirmation_overlay hidden"></div>
+
+<div class="order_confirmation_container hidden">
+  <div class="order_confirmation">
+    <div class="order_confirmation_title">
+      Order Confirmation
+    </div>
+    <div class="order_confirmation_total">
+      Your Order Total
+    </div>
+    <div class="order_confirmation_total_amount">
+      $132.45
+    </div>
+    <form class="order_confirmation_form" action="" method="post">
+      {% csrf_token %}
+      <div class="order_name_title">
+        Enter a name for your order
+      </div>
+      <input id="order_name" type="text" name="" value="">
+      <input type="submit" name="" value="Confirm Order">
+    </form>
+    <div class="order_confirmation_error"></div>
+  </div>
+</div>

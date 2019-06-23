@@ -1,3 +1,5 @@
+<div class="cart_overlay hidden"></div>
+
 <div class="cart_container">
   <div class="cart_button">
     <div class="cart_icon">
@@ -20,7 +22,7 @@
       <div class="cart_heading_item">Item</div>
       <div class="cart_heading_size">Size</div>
       <div class="cart_heading_qty">Qty</div>
-      <div class="cart_heading_price">Price</div>
+      <div class="cart_heading_price">Subtotal</div>
     </div>
     {% for category in categories %}
       <div class="cart_category_container cart_{{category}} hidden">
@@ -37,9 +39,7 @@
       </div>
     </div>
     <div class="place_order_container">
-      <button type="button" name="button">Place Order</button>
+      <button onclick="placeOrder();" type="button" name="button">Place Order</button>
     </div>
   </div>
 </div>
-
-<div class="cart_overlay hidden"></div>
