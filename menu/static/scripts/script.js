@@ -1,3 +1,27 @@
+//
+// Find the CSRF Token cookie value
+// Found at http://musings.tinbrain.net/blog/2015/aug/28/vanilla-js-meets-djangos-csrf/
+function parse_cookies() {
+  var cookies = {};
+  if (document.cookie && document.cookie !== '') {
+    document.cookie.split(';').forEach(function (c) {
+      var m = c.trim().match(/(\w+)=(.*)/);
+      if(m !== undefined) {
+        cookies[m[1]] = decodeURIComponent(m[2]);
+      }
+    });
+  }
+  return cookies;
+}
+const cookies = parse_cookies();
+
+///////////////
+///////
+//// App's js
+//
+
+// order data
+let orderItems = {};
 
 document.addEventListener('DOMContentLoaded', () => {
   // Grab useful DOM elements
@@ -280,18 +304,36 @@ function addToCart(el) {
   // Hide order confirmation box when button clicked
   document.querySelector('.order_confirmation_form').onsubmit = () => {
     // Validate name entry
-    name = document.querySelector('#order_name').value;
+    name = document.querySelector('#order_name').value.trim();
     const letters = /^[A-Za-z]+$/;
     if (!(name.match(letters))) {
       document.querySelector('.order_confirmation_error').innerHTML = "Name must be letters only";
     }
     else if (name.length < 2) {
-     document.querySelector('.order_confirmation_error').innerHTML = "Name must be at least 2 characters";
+      document.querySelector('.order_confirmation_error').innerHTML = "Name must be at least 2 characters";
     }
     else {
-     console.log("success");
-     document.querySelector('.order_confirmation_overlay').classList.add('hidden');
-     document.querySelector('.order_confirmation_container').classList.add('hidden');
+      console.log("success");
+      document.querySelector('.order_confirmation_overlay').classList.add('hidden');
+      document.querySelector('.order_confirmation_container').classList.add('hidden');
+
+      const request = new XMLHttpRequest();
+      request.open('POST', '/placeorder');
+      // Set csrf token in request header
+      request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
+      request.onload = () => {
+        const data = JSON.parse(request.responseText);
+        console.log(data.name);
+      }
+      // Send data
+      const data = new FormData();
+
+      data.append("name", name);
+      request.send(data);
+      console.log("sent: " + data);
+      // Empty order data object
+      orderItems = {};
+      return false;
     }
     return false;
   }
@@ -321,7 +363,6 @@ function placeOrder() {
     console.log("no items in cart");
   }
   else {
-    orderItems = {};
     categories = document.querySelectorAll('.cart_category_title');
     categories.forEach(category => {
       orderItems[category.innerHTML] = [];
@@ -350,7 +391,6 @@ function placeOrder() {
         orderItems[category][i].toppings.push(topping.innerHTML.trim());
       });
     }
-    console.log("confirm");
     document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
     document.querySelector('.order_confirmation_container').classList.remove('hidden');
   }

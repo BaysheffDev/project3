@@ -42,7 +42,7 @@ class Order(models.Model):
         return f"{self.name}, {self.total}, {self.created}"
 
 class OrderLine(models.Model):
-    orderId = models.ManyToManyField(Order, related_name="items")
+    orderId = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     itemId = models.ManyToManyField(Item, blank=True, related_name="orders")
     topping = models.ManyToManyField(Topping, blank=True, related_name="orders")
 

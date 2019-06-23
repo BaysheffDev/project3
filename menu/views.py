@@ -13,3 +13,9 @@ def index(request):
     }
 
     return render(request, "menu/index.html", context)
+
+def placeorder(request):
+    totalPrice = {
+        "name": "alex",
+    }
+    return JsonResponse(totalPrice)
