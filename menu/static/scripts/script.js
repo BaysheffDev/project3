@@ -74,6 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cartOpen = false;
   }
 
+  let pizzaSelected = false; // For pizza topping control
+  let pizzaToppingLimit = 0;
+  let pizzaToppingCount = 0;
   // Add functionality to + button.
   // Increments qty and disables other items if > 0 for either size
   document.querySelectorAll('.plus').forEach(plus => {
@@ -101,6 +104,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const height = item_toppings.querySelector('.toppings_box').offsetHeight;
         item_toppings.style.height = `${height}px`;
       }
+      // If pizza, apply topping restrictions
+      if (!pizzaSelected) {
+        const isPizza = plus.closest('.category_box').querySelectorAll('.pizza');
+        if (isPizza.length > 0) {
+          pizzaSelected = true;
+          const pizzaName = plus.closest('.item').querySelector(".item_name").innerHTML;
+          if (pizzaName !== "Cheese") {
+            const toppingCheckboxes = category_toppings.querySelectorAll('input[type="checkbox"]');
+            toppingCheckboxes.forEach(checkbox => {
+              checkbox.disabled = false;
+            });
+            switch(pizzaName.trim()) {
+              case "1 topping":
+                pizzaToppingLimit = 1;
+                break;
+              case "2 toppings":
+                pizzaToppingLimit = 2;
+                break;
+              case "3 toppings":
+                pizzaToppingLimit = 3;
+                break;
+              case "Special":
+                pizzaToppingLimit = 5;
+                break;
+            }
+          }
+        }
+      }
     });
   });
   // Add functionality to - button.
@@ -114,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (val >= 0) {
         qty.value = val;
       }
-      const toppings = this.closest('.item_box').querySelector('.item_toppings');
+      const category_toppings = this.closest('.category_box').querySelector('.category_toppings');
+      const item_toppings = this.closest('.item_box').querySelector('.item_toppings');
       function checkQtys(qtys) {
         for (let i = 0, len = qtys.length; i < len; i++) {
           if (qtys[i].value != 0) {
@@ -124,17 +156,62 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
       }
       if (checkQtys(itemQuantities)) {
+        // If qty of items selected is 0 remove overlays
         const otherItems = this.closest('.item_container').querySelectorAll('.item_overlay');
         otherItems.forEach(item => {
           item.classList.remove('active');
           item.classList.add('hidden');
         });
-        if (toppings !== null) {
-          const boxToppings = toppings.querySelectorAll('input');
+        // Uncheck and close item toppings
+        if (item_toppings !== null) {
+          const boxToppings = item_toppings.querySelectorAll('input');
           boxToppings.forEach(topping => {
             topping.checked = false;
           });
-          toppings.style.height = "0px";
+          item_toppings.style.height = "0px";
+        }
+        // Disable category toppings
+        if (category_toppings !== null) {
+          const toppingCheckboxes = category_toppings.querySelectorAll('input[type="checkbox"]');
+          toppingCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+          });
+          // This doesn't account for other categories having category toppings in the future, like the Add functionality
+          pizzaSelected = false;
+        }
+      }
+    });
+  });
+
+  // Keeping track of category toppings
+  const categoryToppingsContainers = document.querySelectorAll('.category_toppings');
+  // Seperate category toppings containers
+  categoryToppingsContainers.forEach(categoryToppings => {
+    const toppings = categoryToppings.querySelectorAll('input[type="checkbox"]');
+    const len = toppings.length;
+    toppings.forEach(checkbox => {
+      checkbox.onclick = () => {
+        const val = checkbox.checked;
+        let tally = 0;
+        for (let i = 0; i < len; i++) {
+          if (toppings[i].checked) {
+            tally++;
+          }
+        }
+        // Disable non selected checkboxed if pizza topping limit reached
+        if (tally === pizzaToppingLimit) {
+          for (let i = 0; i < len; i++) {
+            if (toppings[i].checked === false) {
+              toppings[i].disabled = true;
+            }
+          }
+        }
+        // Re-enable pizza toppings if topping is unselected at limit
+        else if (tally === pizzaToppingLimit - 1) {
+          for (let i = 0; i < len; i++) {
+            toppings[i].disabled = false;
+          }
         }
       }
     });
