@@ -23,6 +23,10 @@ const cookies = parse_cookies();
 // order data
 let orderItems = {};
 
+var pizzaSelected = false; // For pizza topping control
+let pizzaToppingLimit = 0;
+let pizzaToppingCount = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
   // Grab useful DOM elements
   const cartButton = document.querySelector('.cart_button');
@@ -74,9 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cartOpen = false;
   }
 
-  let pizzaSelected = false; // For pizza topping control
-  let pizzaToppingLimit = 0;
-  let pizzaToppingCount = 0;
   // Add functionality to + button.
   // Increments qty and disables other items if > 0 for either size
   document.querySelectorAll('.plus').forEach(plus => {
@@ -98,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         thisItem.classList.remove('active');
         thisItem.classList.add('hidden');
-        // Expand toppings
       }
+      // Expand toppings
       else if (item_toppings !== null) {
         const height = item_toppings.querySelector('.toppings_box').offsetHeight;
         item_toppings.style.height = `${height}px`;
@@ -217,6 +218,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Order Confirmation
+  // Hide order confirmation when overlay clicked
+  document.querySelector('.order_confirmation_overlay').onclick = (e) => {
+    document.querySelector('.order_confirmation_overlay').classList.add('hidden');
+    document.querySelector('.order_confirmation_container').classList.add('hidden');
+  }
+  // Hide order confirmation box when button clicked
+  document.querySelector('.order_confirmation_form').onsubmit = () => {
+    // Validate name entry
+    name = document.querySelector('#order_name').value.trim();
+    const letters = /^[A-Za-z]+$/;
+    if (!(name.match(letters))) {
+      document.querySelector('.order_confirmation_error').innerHTML = "Name must be letters only";
+    }
+    else if (name.length < 2) {
+      document.querySelector('.order_confirmation_error').innerHTML = "Name must be at least 2 characters";
+    }
+    else {
+      console.log("success");
+      document.querySelector('.order_confirmation_overlay').classList.add('hidden');
+      document.querySelector('.order_confirmation_container').classList.add('hidden');
+
+      const request = new XMLHttpRequest();
+      request.open('POST', '/placeorder');
+      // Set csrf token in request header
+      request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
+      request.onload = () => {
+        const data = JSON.parse(request.responseText);
+        console.log(data.name);
+      }
+      // Send data
+      const data = new FormData();
+
+      data.append("name", name);
+      request.send(data);
+      console.log("sent: " + data);
+      // Empty order data object
+      orderItems = {};
+      return false;
+    }
+    return false;
+  }
+
 });
 
 // Trigger cart notification
@@ -238,20 +282,23 @@ function addToCart(el) {
   let toppings = "";
   let toppingNames = [];
   let toppingPrices = [];
-  // If category toppings exist, add selected ones to a string, and uncheck them
-  if (categoryToppings !== null) {
-    categoryToppings.forEach(topping => {
-      if (topping.checked === true) {
-        const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
-        toppings += "<div class='cart_item_toppings_name'>" + name + " </div>";
-        topping.checked = false;
-      }
-    });
-  }
 
   items.forEach(item => {
     const qty = item.value;
     if (qty > 0) {
+      // If category toppings exist, add selected ones to a string, and uncheck them
+      if (categoryToppings !== null) {
+        categoryToppings.forEach(topping => {
+          if (topping.checked === true) {
+            const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
+            toppings += "<div class='cart_item_toppings_name'>" + name + " </div>";
+            toppingNames.push(name);
+            console.log(toppings);
+            console.log(toppingNames);
+          }
+        });
+      }
+
       const itemCategoryName = item.closest('.category_box').querySelector('.category_title').innerHTML.trim().split(' ')[0];
       document.querySelector('.cart_' + itemCategoryName).classList.remove('hidden');
       // Cart Category container
@@ -369,51 +416,17 @@ function addToCart(el) {
     });
     box.style.height = "0px";
   });
+  // Disable category toppings checkboxes
+  if (changes) {
+    categoryToppings.forEach(checkbox => {
+      checkbox.disabled = true;
+      checkbox.checked = false;
+    });
+  }
   // Trigger cart notification if there were items to add to cart
   changes ? cartNotification() : console.log("No items selected");
 
-  // Order Confirmation
-  // Hide order confirmation when overlay clicked
-  document.querySelector('.order_confirmation_overlay').onclick = (e) => {
-    document.querySelector('.order_confirmation_overlay').classList.add('hidden');
-    document.querySelector('.order_confirmation_container').classList.add('hidden');
-  }
-  // Hide order confirmation box when button clicked
-  document.querySelector('.order_confirmation_form').onsubmit = () => {
-    // Validate name entry
-    name = document.querySelector('#order_name').value.trim();
-    const letters = /^[A-Za-z]+$/;
-    if (!(name.match(letters))) {
-      document.querySelector('.order_confirmation_error').innerHTML = "Name must be letters only";
-    }
-    else if (name.length < 2) {
-      document.querySelector('.order_confirmation_error').innerHTML = "Name must be at least 2 characters";
-    }
-    else {
-      console.log("success");
-      document.querySelector('.order_confirmation_overlay').classList.add('hidden');
-      document.querySelector('.order_confirmation_container').classList.add('hidden');
-
-      const request = new XMLHttpRequest();
-      request.open('POST', '/placeorder');
-      // Set csrf token in request header
-      request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
-      request.onload = () => {
-        const data = JSON.parse(request.responseText);
-        console.log(data.name);
-      }
-      // Send data
-      const data = new FormData();
-
-      data.append("name", name);
-      request.send(data);
-      console.log("sent: " + data);
-      // Empty order data object
-      orderItems = {};
-      return false;
-    }
-    return false;
-  }
+  pizzaSelected = false;
 }
 
 // Remove item from cart
