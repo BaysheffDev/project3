@@ -20,9 +20,6 @@ const cookies = parse_cookies();
 //// App's js
 //
 
-// order data
-let orderItems = {};
-
 var pizzaSelected = false; // For pizza topping control
 let pizzaToppingLimit = 0;
 let pizzaToppingCount = 0;
@@ -116,19 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
             toppingCheckboxes.forEach(checkbox => {
               checkbox.disabled = false;
             });
-            switch(pizzaName.trim()) {
-              case "1 topping":
-                pizzaToppingLimit = 1;
-                break;
-              case "2 toppings":
-                pizzaToppingLimit = 2;
-                break;
-              case "3 toppings":
-                pizzaToppingLimit = 3;
-                break;
-              case "Special":
-                pizzaToppingLimit = 5;
-                break;
+            if (pizzaName.trim() !== "Special") {
+              const toppingAmount = pizzaName.split(" ");
+                  pizzaToppingLimit = parseInt(toppingAmount[0]);
+                  console.log("pizzatoppinglimit" + pizzaToppingLimit);
+            }
+            else {
+              pizzaToppingLimit = 8;
             }
           }
         }
@@ -449,19 +440,22 @@ function removeItem(el) {
 function placeOrder() {
   // Check if any items in cart
   const itemsCheck = document.querySelectorAll('.cart_item_container');
+  console.log(itemsCheck);
   if (itemsCheck.length === 0) {
     console.log("no items in cart");
   }
   else {
+    // order data
+    let orderItems = {};
+
     categories = document.querySelectorAll('.cart_category_title');
     categories.forEach(category => {
-      orderItems[category.innerHTML] = [];
+      orderItems[category.innerHTML.trim()] = [];
     });
     // Get details of items in cart ready to send to backend
     const items = itemsCheck;
     for (let i = 0, len = items.length; i < len; i++) {
-      console.log(items[i]);
-      const category = items[i].closest('.cart_category_container').querySelector('.cart_category_title').innerHTML;
+      const category = items[i].closest('.cart_category_container').querySelector('.cart_category_title').innerHTML.trim();
       const itemName = items[i].querySelector('.cart_item_name').innerHTML;
       const itemSize = items[i].querySelector('.cart_item_size').innerHTML;
       const itemQty = items[i].querySelector('.cart_item_qty').innerHTML.slice(1);
@@ -473,12 +467,13 @@ function placeOrder() {
         "toppings": [],
       });
       // Add item name, size, qty and toppings to object
-      orderItems[category][i].name = itemName;
-      orderItems[category][i].size = itemSize;
-      orderItems[category][i].qty = itemQty;
+      const index = orderItems[category].length-1; // Correct position index in category item array
+      orderItems[category][index].name = itemName;
+      orderItems[category][index].size = itemSize;
+      orderItems[category][index].qty = itemQty;
       const itemToppings = items[i].querySelectorAll('.cart_item_toppings_name');
       itemToppings.forEach(topping => {
-        orderItems[category][i].toppings.push(topping.innerHTML.trim());
+        orderItems[category][index].toppings.push(topping.innerHTML.trim());
       });
     }
     document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
