@@ -20,6 +20,9 @@ const cookies = parse_cookies();
 //// App's js
 //
 
+// Order Data
+orderItems = {};
+
 var pizzaSelected = false; // For pizza topping control
 let pizzaToppingLimit = 0;
 let pizzaToppingCount = 0;
@@ -237,14 +240,15 @@ document.addEventListener('DOMContentLoaded', () => {
       request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
       request.onload = () => {
         const data = JSON.parse(request.responseText);
-        console.log(data.name);
+        console.log(data);
       }
       // Send data
       const data = new FormData();
-
-      data.append("name", name);
+      const abc = JSON.stringify(orderItems);
+      data.append("order", abc);
       request.send(data);
-      console.log("sent: " + data);
+      console.log("sent");
+      console.log(abc);
       // Empty order data object
       orderItems = {};
       return false;
@@ -445,8 +449,8 @@ function placeOrder() {
     console.log("no items in cart");
   }
   else {
-    // order data
-    let orderItems = {};
+    // Make sure order data is empty
+    orderItems = {};
 
     categories = document.querySelectorAll('.cart_category_title');
     categories.forEach(category => {
