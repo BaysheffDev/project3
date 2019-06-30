@@ -44,7 +44,7 @@ class Order(models.Model):
 
 class OrderLine(models.Model):
     orderId = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    itemId = models.ManyToManyField(Item, blank=True, related_name="orderItems")
+    itemId = models.ForeignKey(Item, blank=True, null=True, on_delete=models.CASCADE, related_name="orderItems")
     quantity = models.IntegerField(default=1, blank=True, null=True)
 
     def __str__(self):
@@ -52,7 +52,7 @@ class OrderLine(models.Model):
 
 class OrderLineTopping(models.Model):
     orderLineId = models.ForeignKey(OrderLine, on_delete=models.CASCADE, related_name="toppings")
-    topping = models.ManyToManyField(Topping, blank=True, related_name="orderToppings")
+    topping = models.ForeignKey(Topping, blank=True, null=True, on_delete=models.CASCADE, related_name="orderToppings")
 
     def __str__(self):
         return f"{self.orderLineId}, {self.topping}"

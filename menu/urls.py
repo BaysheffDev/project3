@@ -5,5 +5,6 @@ urlpatterns = [
     path('', views.index),
     path('placeorder', views.placeorder),
     path('confirmorder', views.confirmorder),
+    path('adminorders', views.adminorders),
     path('test', views.test),
 ]

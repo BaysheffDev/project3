@@ -51,11 +51,11 @@ def placeorder(request):
                         for i in tp:
                             if i["category"] == categoryObj[0]["id"]:
                                 if i["price"]:
-                                    total += i["price"]
+                                    total += i["price"] * int(qty)
                                     break
                             if i["item"] == itemObj[0]["id"]:
                                 if i["price"]:
-                                    total += i["price"]
+                                    total += i["price"] * int(qty)
                                     break
                         categories["toppings"].append(tp[0]["name"])
                         # categories["toppingPrice"] = tp[0]["price"]
@@ -95,9 +95,8 @@ def confirmorder(request):
                 itemObj2 = Item.objects.get(name=name, category=categoryObj[0]["id"])
                 orderTotal += itemObj[0][price] * int(qty)
                 # Create orderLine
-                orderLineObj = OrderLine(orderId=orderObj, quantity=qty)
+                orderLineObj = OrderLine(orderId=orderObj, itemId=itemObj2, quantity=qty)
                 orderLineObj.save()
-                orderLineObj.itemId.add(itemObj2)
                 # Get toppings for item if any
                 toppings = item["toppings"]
                 if toppings:
@@ -108,31 +107,69 @@ def confirmorder(request):
                                 # Get topping object
                                 toppingObj = Topping.objects.get(name=topping, category=categoryObj[0]["id"])
                                 # Create OrderLineTopping
-                                # Create OrderLineTopping
-                                orderLineToppingObj = OrderLineTopping(orderLineId=orderLineObj)
+                                orderLineToppingObj = OrderLineTopping(orderLineId=orderLineObj, topping=toppingObj)
                                 orderLineToppingObj.save()
-                                orderLineToppingObj.topping.add(toppingObj)
+                                # orderLineToppingObj.topping.add(toppingObj)
                                 if i["price"]:
-                                    orderTotal += i["price"]
+                                    orderTotal += i["price"] * int(qty)
                                     break
                             if i["item"] == itemObj[0]["id"]:
                                 # Get topping object
                                 toppingObj = Topping.objects.get(name=topping, item=itemObj[0]["id"])
                                 # Create OrderLineTopping
-                                orderLineToppingObj = OrderLineTopping(orderLineId=orderLineObj)
+                                orderLineToppingObj = OrderLineTopping(orderLineId=orderLineObj, topping=toppingObj)
                                 orderLineToppingObj.save()
-                                orderLineToppingObj.topping.add(toppingObj)
-                                if i["price"]:
-                                    orderTotal += i["price"]
-                                    break
 
-        print(itemObj2)
-        print(orderLineObj)
-        print(orderLineToppingObj)
-        print(toppingObj)
+                                if i["price"]:
+                                    orderTotal += i["price"] * int(qty)
+                                    break
+        saveOrderTotal = Order.objects.filter(pk=orderObj.id)
+        for obj in saveOrderTotal:
+            obj.total = orderTotal
+            obj.save()
+
+        print(orderObj)
+        # print(itemObj2)
+        # print(orderLineObj)
+        # print(orderLineToppingObj)
+        # print(toppingObj)
         return JsonResponse({"success": orderObj.id, "total": orderTotal})
     except:
         raise Http404("didn't work mate")
+
+def adminorders(request):
+    orders = Order.objects.all()
+    orderCollection = []
+    obj = {}
+    for order in orders:
+        obj = {}
+        name = order.name
+        obj["id"] = order.id
+        obj["name"] = order.name
+        obj["total"] = order.total
+        obj["created"] = order.created
+        obj["status"] = order.status
+        orderLinesList = []
+        # get orderlines for this orderlines
+        orderObj = Order.objects.get(pk=order.id)
+        print(orderObj)
+        orderLines = orderObj.items.all().values("itemId")
+        print("====================================")
+        print(orderLines)
+        print("++++++++++++++++++++++++++++++++++++++")
+        OL_Container = {}
+        for line in orderLines:
+            # orderLineItem = Item.objects.filter(pk=line.itemId).values("name")
+            print("!!!!! ", line)
+            # OL_Container["itemName"] = orderLineItem[0]["name"]
+            # # print(OL_Container["itemId"])
+            # OL_Container["quantity"] = line.quantity
+            # orderLinesList.append(OL_Container)
+            # obj["orderlines"] = orderLinesList
+        orderCollection.append(obj)
+
+    print(orders)
+    return JsonResponse({"orderCollection": orderCollection})
 
 def test(request):
     order=request.POST["order"]

@@ -43,9 +43,12 @@ h1 {
 
 .login_container {
   display: flex;
-  width: 120px;
   justify-content: space-between;
   align-items: center;
+}
+
+.login, .register, .admin {
+  margin-left: 15px;
 }
 
 /* MENU */
