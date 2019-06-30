@@ -37,14 +37,22 @@ class Order(models.Model):
     name = models.CharField(max_length=64)
     total = models.DecimalField(decimal_places=2, max_digits=6)
     created = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=64, default="Placed")
 
     def __str__(self):
         return f"{self.name}, {self.total}, {self.created}"
 
 class OrderLine(models.Model):
     orderId = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    itemId = models.ManyToManyField(Item, blank=True, related_name="orders")
-    topping = models.ManyToManyField(Topping, blank=True, related_name="orders")
+    itemId = models.ManyToManyField(Item, blank=True, related_name="orderItems")
+    quantity = models.IntegerField(default=1, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.orderId}, {self.itemId}, {self.topping}"
+        return f"{self.orderId}, {self.itemId}, {self.quantity}"
+
+class OrderLineTopping(models.Model):
+    orderLineId = models.ForeignKey(OrderLine, on_delete=models.CASCADE, related_name="toppings")
+    topping = models.ManyToManyField(Topping, blank=True, related_name="orderToppings")
+
+    def __str__(self):
+        return f"{self.orderLineId}, {self.topping}"

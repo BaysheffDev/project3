@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.order_confirmation_overlay').classList.add('hidden');
     document.querySelector('.order_confirmation_container').classList.add('hidden');
   }
-  // Hide order confirmation box when button clicked
+  // Hide order confirmation box when button clicked and create new order
   document.querySelector('.order_confirmation_form').onsubmit = () => {
     // Validate name entry
     name = document.querySelector('#order_name').value.trim();
@@ -235,20 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelector('.order_confirmation_container').classList.add('hidden');
 
       const request = new XMLHttpRequest();
-      request.open('POST', '/placeorder');
+      request.open('POST', '/confirmorder');
       // Set csrf token in request header
       request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
       request.onload = () => {
+        console.log(request.responseText);
         const data = JSON.parse(request.responseText);
         console.log(data);
       }
       // Send data
       const data = new FormData();
-      const abc = JSON.stringify(orderItems);
-      data.append("order", abc);
+      const orderData = JSON.stringify(orderItems);
+      data.append("order", orderData);
+      data.append("orderName", name);
       request.send(data);
       console.log("sent");
-      console.log(abc);
       // Empty order data object
       orderItems = {};
       return false;
@@ -480,8 +481,25 @@ function placeOrder() {
         orderItems[category][index].toppings.push(topping.innerHTML.trim());
       });
     }
-    document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
-    document.querySelector('.order_confirmation_container').classList.remove('hidden');
+
+    const request = new XMLHttpRequest();
+    request.open('POST', '/placeorder');
+    // Set csrf token in request header
+    request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
+    request.onload = () => {
+      console.log(request.responseText);
+      const data = JSON.parse(request.responseText);
+      console.log(data);
+      document.querySelector('.order_confirmation_total_amount').innerHTML = "$" + data.price
+      document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
+      document.querySelector('.order_confirmation_container').classList.remove('hidden');
+    }
+    // Send data
+    const data = new FormData();
+    const orderData = JSON.stringify(orderItems);
+    data.append("order", orderData);
+    request.send(data);
+    console.log("sent");
   }
 }
 
