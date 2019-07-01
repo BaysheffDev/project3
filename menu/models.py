@@ -45,6 +45,7 @@ class Order(models.Model):
 class OrderLine(models.Model):
     orderId = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     itemId = models.ForeignKey(Item, blank=True, null=True, on_delete=models.CASCADE, related_name="orderItems")
+    price = models.DecimalField(decimal_places=2, max_digits=5, blank=True, null=True)
     quantity = models.IntegerField(default=1, blank=True, null=True)
 
     def __str__(self):
