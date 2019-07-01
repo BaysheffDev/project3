@@ -52,11 +52,11 @@ def placeorder(request):
                             if i["category"] == categoryObj[0]["id"]:
                                 if i["price"]:
                                     total += i["price"] * int(qty)
-                                    break
+                                break
                             if i["item"] == itemObj[0]["id"]:
                                 if i["price"]:
                                     total += i["price"] * int(qty)
-                                    break
+                                break
                         categories["toppings"].append(tp[0]["name"])
                         # categories["toppingPrice"] = tp[0]["price"]
             categories["total"] = total
@@ -165,21 +165,14 @@ def adminorders(request):
         orderLinesList = []
         # get orderlines for this orderline
         orderObj = Order.objects.get(pk=order.id)
-        print(orderObj)
         orderLines = orderObj.items.all().values("id", "itemId", "price", "quantity")
-        print("====================================")
-        print(orderLines)
-        print("++++++++++++++++++++++++++++++++++++++")
         OL_Container = {}
         for line in orderLines:
-            print("!!!!! ", line)
             itemName = Item.objects.filter(pk=line["itemId"]).values("name", "category")
-            print("???? ", itemName)
             OL_Container["itemName"] = itemName[0]["category"]
             OL_Container["itemName"] = itemName[0]["name"]
             OL_Container["qty"] = line["quantity"]
             OL_Container["linePrice"] = line["price"]
-            print("*OL_Container* ", OL_Container)
             orderLineObj = OrderLine.objects.get(pk=line["id"])
             toppingLines = orderLineObj.toppings.all().values("topping")
             toppingLinesList = []
@@ -192,7 +185,6 @@ def adminorders(request):
         obj["orderLines"] = orderLinesList
         orderCollection.append(obj)
 
-    print(orders)
     return JsonResponse({"orderCollection": orderCollection})
 
 def test(request):
