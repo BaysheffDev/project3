@@ -1,0 +1,49 @@
+{% extends "menu/base.html" %}
+
+{% block title %}
+  Orders
+{% endblock %}
+
+{% block body %}
+  {% include "menu/header.html" %}
+    <div class="orders_container">
+      <div class="orders_title">
+        {{ title }}
+      </div>
+      <div class="orders_headings">
+        orders
+      </div>
+      <div class="orders_contents">
+        {% for order in orders %}
+          <div class="order_box">
+            <div class="order_id">
+              {{ order.id }}
+            </div>
+            <div class="order">
+              {% for orderLine in order.orderLines %}
+                <div class="order_line">
+                  <div class="order_line_item">
+                    <div class="line_item_category">
+                      {{ orderLine.itemCategory }}
+                    </div>
+                    <div class="line_item_name">
+                      {{ orderLine.itemName }}
+                    </div>
+                  </div>
+                  {% if orderLine.toppings.length > 0 %}
+                    <div class="order_line_topping">
+                      {% for topping in orderLine.toppings %}
+                        <div class="line_item_topping">
+                          {{ topping }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% include "menu/footer.html" %}
+{% endblock %}

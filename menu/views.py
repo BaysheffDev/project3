@@ -63,7 +63,7 @@ def placeorder(request):
 
         return JsonResponse({"price": total})
     except:
-        raise Http404("didn't work mate")
+        raise Http404("Failed to validate order")
         # Create order
 
 def confirmorder(request):
@@ -153,27 +153,28 @@ def confirmorder(request):
 def adminorders(request):
     orders = Order.objects.all()
     orderCollection = []
-    obj = {}
+    o = {}
     for order in orders:
-        obj = {}
+        o = {}
         name = order.name
-        obj["id"] = order.id
-        obj["name"] = order.name
-        obj["total"] = order.total
-        obj["created"] = order.created
-        obj["status"] = order.status
+        o["id"] = order.id
+        o["name"] = order.name
+        o["total"] = order.total
+        o["created"] = order.created
+        o["status"] = order.status
         orderLinesList = []
-        # get orderlines for this orderline
+        # Get orderlines for this order
         orderObj = Order.objects.get(pk=order.id)
         orderLines = orderObj.items.all().values("id", "itemId", "price", "quantity")
         OL_Container = {}
         for line in orderLines:
             itemName = Item.objects.filter(pk=line["itemId"]).values("name", "category")
-            OL_Container["itemName"] = itemName[0]["category"]
+            OL_Container["itemCategory"] = itemName[0]["category"]
             OL_Container["itemName"] = itemName[0]["name"]
             OL_Container["qty"] = line["quantity"]
             OL_Container["linePrice"] = line["price"]
             orderLineObj = OrderLine.objects.get(pk=line["id"])
+            # Get toppinglines for this orderline
             toppingLines = orderLineObj.toppings.all().values("topping")
             toppingLinesList = []
             for topping in toppingLines:
@@ -182,10 +183,38 @@ def adminorders(request):
             OL_Container["toppings"] = toppingLinesList
             orderLinesList.append(OL_Container)
             OL_Container = {}
-        obj["orderLines"] = orderLinesList
-        orderCollection.append(obj)
+        o["orderLines"] = orderLinesList
+        orderCollection.append(o)
 
-    return JsonResponse({"orderCollection": orderCollection})
+    # return JsonResponse({"orderCollection": orderCollection})
+    context = {
+        "orders": orderCollection,
+    }
+
+    # ordercollection representation
+    # = [
+    #     {
+    #         "id":
+    #         "name":
+    #         "total":
+    #         "created":
+    #         "status":
+    #         "orderLines": [
+    #             "itemCategory":
+    #             "itemName":
+    #             "qty":
+    #             "linePrice":
+    #             "toppings": [
+    #                 #name
+    #             ]
+    #         ]
+    #     },
+    #     {
+    #      # next order
+    #     },
+    # ]
+
+    return render(request, "menu/orders.html", context)
 
 def test(request):
     order=request.POST["order"]

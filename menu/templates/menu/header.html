@@ -1,26 +1,35 @@
 <nav>
   <div class="logo_container">
-    <div class="">
-      <i class="fas fa-pizza-slice" style="transform: rotate(-60deg);"></i>
-      <i class="fas fa-pizza-slice"></i>
-    </div>
+    <a href="{% url 'index' %}">
+      <div class="">
+        <i class="fas fa-pizza-slice" style="transform: rotate(-60deg);"></i>
+        <i class="fas fa-pizza-slice"></i>
+      </div>
+    </a>
   </div>
   <div class="login_container">
+    <a href="{% url 'adminorders' %}">
+      <div class="admin">
+        Admin&nbsp;
+        <i class="fab fa-buffer"></i>
+      </div>
+    </a>
     {% if loggedin %}
       <div class="">
         Logout
       </div>
     {% else %}
-      <div class="login">
-        Login
-      </div>
-      <div class="register">
-        Register
-      </div>
+      <a href="">
+        <div class="login">
+          Login
+        </div>
+      </a>
+      <a href="">
+        <div class="register">
+          Register
+        </div>
+      </a>
     {% endif %}
-    <div class="admin">
-      Admin
-    </div>
   </div>
 </nav>
 <div class="nav-spacer"></div>

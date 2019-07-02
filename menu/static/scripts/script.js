@@ -257,20 +257,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   }
 
-  document.querySelector('.admin').onclick = () => {
-
-      const request = new XMLHttpRequest();
-      request.open('GET', '/adminorders');
-      // Set csrf token in request header
-      request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
-      request.onload = () => {
-        console.log(request.responseText);
-        const data = JSON.parse(request.responseText);
-        console.log(data);
-      }
-      request.send();
-      console.log("sent");
-    }
+  // document.querySelector('.admin').onclick = () => {
+  //
+  //     const request = new XMLHttpRequest();
+  //     request.open('GET', '/adminorders');
+  //     // Set csrf token in request header
+  //     request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
+  //     request.onload = () => {
+  //       console.log(request.responseText);
+  //       const data = JSON.parse(request.responseText);
+  //       console.log(data);
+  //     }
+  //     request.send();
+  //     console.log("sent");
+  //   }
 
 });
 
