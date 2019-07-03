@@ -66,6 +66,7 @@ def placeorder(request):
         raise Http404("Failed to validate order")
         # Create order
 
+# Validates order correctly exists in database and returns correct total price to front end (prevents fraud)
 def confirmorder(request):
     try:
         orderCreated = False
@@ -150,6 +151,7 @@ def confirmorder(request):
     except:
         raise Http404("didn't work mate")
 
+# Retreives all orders from database and packages all data up in JSON format
 def adminorders(request):
     orders = Order.objects.all()
     orderCollection = []
@@ -169,7 +171,8 @@ def adminorders(request):
         OL_Container = {}
         for line in orderLines:
             itemName = Item.objects.filter(pk=line["itemId"]).values("name", "category")
-            OL_Container["itemCategory"] = itemName[0]["category"]
+            itemCategory = Category.objects.filter(pk=itemName[0]["category"]).values("name")
+            OL_Container["itemCategory"] = itemCategory[0]["name"]
             OL_Container["itemName"] = itemName[0]["name"]
             OL_Container["qty"] = line["quantity"]
             OL_Container["linePrice"] = line["price"]
@@ -188,6 +191,7 @@ def adminorders(request):
 
     # return JsonResponse({"orderCollection": orderCollection})
     context = {
+        "title": "Admin Orders",
         "orders": orderCollection,
     }
 
@@ -199,7 +203,7 @@ def adminorders(request):
     #         "total":
     #         "created":
     #         "status":
-    #         "orderLines": [
+    #         "orderLines": [{
     #             "itemCategory":
     #             "itemName":
     #             "qty":
@@ -207,7 +211,7 @@ def adminorders(request):
     #             "toppings": [
     #                 #name
     #             ]
-    #         ]
+    #         }]
     #     },
     #     {
     #      # next order

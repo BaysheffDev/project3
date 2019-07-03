@@ -11,7 +11,11 @@
         {{ title }}
       </div>
       <div class="orders_headings">
-        orders
+        <div class="order_id_heading">Order Id</div>
+        <div class="order_name_heading">Name</div>
+        <div class="order_created_heading">Date</div>
+        <div class="order_total_heading">Total</div>
+        <div class="order_status_heading">Status</div>
       </div>
       <div class="orders_contents">
         {% for order in orders %}
@@ -20,18 +24,34 @@
               {{ order.id }}
             </div>
             <div class="order">
+              <div class="order_info">
+                <div class="order_created">{{ order.created }}</div>
+                <div class="order_name">{{ order.name }}</div>
+                <div class="order_total">{{ order.total }}</div>
+                <div class="order_status {{order.status}}">{{ order.status }}</div>
+                <div class="change_order_status">
+                  <select data-orderId="{{order.id}}" class="" name="">
+                    <optgroup label="">
+                      <option value="Placed">Placed</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Complete">Complete</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
               {% for orderLine in order.orderLines %}
                 <div class="order_line">
                   <div class="order_line_item">
                     <div class="line_item_category">
-                      {{ orderLine.itemCategory }}
+                      ({{ orderLine.itemCategory }})
                     </div>
                     <div class="line_item_name">
                       {{ orderLine.itemName }}
                     </div>
                   </div>
-                  {% if orderLine.toppings.length > 0 %}
+                  {% if orderLine.toppings %}
                     <div class="order_line_topping">
+                      -
                       {% for topping in orderLine.toppings %}
                         <div class="line_item_topping">
                           {{ topping }}
@@ -39,9 +59,13 @@
                       {% endfor %}
                     </div>
                   {% endif %}
+                  <div class="order_line_price">
+                    {{ orderLine.linePrice }}
+                  </div>
+                </div>
               {% endfor %}
-            </div>
           </div>
+        </div>
         {% endfor %}
       </div>
     </div>

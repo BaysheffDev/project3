@@ -638,7 +638,127 @@ h1 {
 
 /* ORDERS */
 .orders_container {
-    min-height: calc(100vh - 230px);
+  min-height: calc(100vh - 230px);
+}
+
+.orders_contents {
+  width: 95%;
+  max-width: 600px;
+  display: block;
+  font-size: 0.8em;
+}
+
+.orders_container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 100%;
+}
+
+.orders_title {
+  width: 100%;
+  height: 50px;
+  text-align: center;
+}
+
+.orders_headings {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.order_box {
+  display: flex;
+  width: 100%;
+  margin: 10px 0px;
+}
+
+.order_info {
+  width: 100%;
+  display: flex;
+  background: #f9f9f9;
+  padding: 5px;
+  align-items: center;
+  font-weight: bold;
+}
+
+.order_info div {
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.order_line {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.order_line div {
+  padding: 2px;
+}
+
+.order {
+  width: calc(100% - 40px);
+}
+
+.order_line_item {
+  display: flex;
+}
+
+.line_item_category {
+  color: red;
+}
+
+.order_line_topping {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  color: #00b200;
+}
+
+.order_line_price {
+  color: grey;
+}
+
+.order_id {
+  width: 7.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+}
+
+.order_name {
+  width: 20%;
+}
+
+.order_created {
+  width: 30%;
+  font-size: 0.8em;
+}
+
+.order_total {
+  width: 15%;
+}
+
+.order_info .order_status {
+  justify-content: center;
+  color: white;
+  border-radius: 20px;
+  padding: 5px;
+  height: 15px;
+}
+
+.Placed {
+  background: #ff5353;
+}
+.Progress {
+  background: #ff9f0a;
+}
+.Complete {
+  background: #01b200;
 }
 
 /***************************/
