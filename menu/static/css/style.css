@@ -681,6 +681,7 @@ h1 {
   padding: 5px;
   align-items: center;
   font-weight: bold;
+  border-radius: 5px;
 }
 
 .order_info div {
@@ -711,6 +712,10 @@ h1 {
   color: red;
 }
 
+.line_item_size {
+  color: grey;
+}
+
 .order_line_topping {
   display: flex;
   align-items: center;
@@ -723,11 +728,15 @@ h1 {
 }
 
 .order_id {
-  width: 7.5%;
+  width: 5%;
+  background: #000000;
+  margin-right: 5px;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 35px;
+  height: 33px;
+  border-radius: 5px;
 }
 
 .order_name {
@@ -746,15 +755,13 @@ h1 {
 .order_info .order_status {
   justify-content: center;
   color: white;
-  border-radius: 20px;
-  padding: 5px;
-  height: 15px;
+  width: 60px;
 }
 
 .Placed {
   background: #ff5353;
 }
-.Progress {
+.Preparing {
   background: #ff9f0a;
 }
 .Complete {

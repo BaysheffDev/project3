@@ -518,6 +518,16 @@ function placeOrder() {
   }
 }
 
+function changeOrderStatus(el) {
+  const status = el.options[el.selectedIndex].value;
+  const statusBox = el.closest('.order_info').querySelector('.order_status');
+  const statusClass = statusBox.classList.item(1);
+  statusBox.classList.remove(statusClass);
+  statusBox.classList.add(status);
+  statusBox.innerHTML = status;
+  console.log("changing status: " + status);
+}
+
 //
 //////
 ////////////

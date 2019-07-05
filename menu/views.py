@@ -85,18 +85,22 @@ def confirmorder(request):
                 name = item["name"]
                 price = item["size"]
                 qty = item["qty"]
+                size = ""
                 # get correct pricing according to size of item
                 if price == "Sml":
                     price = "smallPrice"
+                    size = "Sml"
                 if price == "Lg":
                     price = "largePrice"
+                    size = "Lg"
                 if price == "Std":
                     price = "stdPrice"
+                    size = "Std"
                 itemObj = Item.objects.filter(name=name, category=categoryObj[0]["id"]).values("id", "name", price)
                 itemObj2 = Item.objects.get(name=name, category=categoryObj[0]["id"])
                 orderTotal += itemObj[0][price] * int(qty)
                 # Create orderLine
-                orderLineObj = OrderLine(orderId=orderObj, itemId=itemObj2, quantity=qty)
+                orderLineObj = OrderLine(orderId=orderObj, itemId=itemObj2, itemSize=size, quantity=qty)
                 orderLineObj.save()
                 orderLineTotal =  itemObj[0][price] * int(qty)
                 # Get toppings for item if any
@@ -167,13 +171,14 @@ def adminorders(request):
         orderLinesList = []
         # Get orderlines for this order
         orderObj = Order.objects.get(pk=order.id)
-        orderLines = orderObj.items.all().values("id", "itemId", "price", "quantity")
+        orderLines = orderObj.items.all().values("id", "itemId", "itemSize", "price", "quantity")
         OL_Container = {}
         for line in orderLines:
             itemName = Item.objects.filter(pk=line["itemId"]).values("name", "category")
             itemCategory = Category.objects.filter(pk=itemName[0]["category"]).values("name")
             OL_Container["itemCategory"] = itemCategory[0]["name"]
             OL_Container["itemName"] = itemName[0]["name"]
+            OL_Container["itemSize"] = line["itemSize"]
             OL_Container["qty"] = line["quantity"]
             OL_Container["linePrice"] = line["price"]
             orderLineObj = OrderLine.objects.get(pk=line["id"])
@@ -206,6 +211,7 @@ def adminorders(request):
     #         "orderLines": [{
     #             "itemCategory":
     #             "itemName":
+    #             "itemSize":
     #             "qty":
     #             "linePrice":
     #             "toppings": [

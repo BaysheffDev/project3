@@ -30,12 +30,10 @@
                 <div class="order_total">{{ order.total }}</div>
                 <div class="order_status {{order.status}}">{{ order.status }}</div>
                 <div class="change_order_status">
-                  <select data-orderId="{{order.id}}" class="" name="">
-                    <optgroup label="">
-                      <option value="Placed">Placed</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Complete">Complete</option>
-                    </optgroup>
+                  <select data-orderId="{{order.id}}" onchange="changeOrderStatus(this)" class="order_status_selector" name="">
+                    <option {% if order.status == "Placed" %}selected{% endif %} value="Placed">Placed</option>
+                    <option {% if order.status == "Preparing" %}selected{% endif %} value="Preparing">Processing</option>
+                    <option {% if order.status == "Complete" %}selected{% endif %} value="Complete">Complete</option>
                   </select>
                 </div>
               </div>
@@ -45,8 +43,14 @@
                     <div class="line_item_category">
                       ({{ orderLine.itemCategory }})
                     </div>
+                    <div class="line_item_qty">
+                      {{ orderLine.qty }}x
+                    </div>
                     <div class="line_item_name">
                       {{ orderLine.itemName }}
+                    </div>
+                    <div class="line_item_size">
+                      ({{ orderLine.itemSize }})
                     </div>
                   </div>
                   {% if orderLine.toppings %}
