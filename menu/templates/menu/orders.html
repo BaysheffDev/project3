@@ -8,14 +8,17 @@
   {% include "menu/header.html" %}
     <div class="orders_container">
       <div class="orders_title">
-        {{ title }}
+        {{ title }} Orders
       </div>
       <div class="orders_headings">
-        <div class="order_id_heading">Order Id</div>
-        <div class="order_name_heading">Name</div>
+        <div class="order_id_heading">Id</div>
         <div class="order_created_heading">Date</div>
+        <div class="order_name_heading">Name</div>
         <div class="order_total_heading">Total</div>
         <div class="order_status_heading">Status</div>
+        {% if title == "Admin" %}
+        <div class="order_status_spacer"></div>
+        {% endif %}
       </div>
       <div class="orders_contents">
         {% for order in orders %}
@@ -27,15 +30,17 @@
               <div class="order_info">
                 <div class="order_created">{{ order.created }}</div>
                 <div class="order_name">{{ order.name }}</div>
-                <div class="order_total">{{ order.total }}</div>
+                <div class="order_total">${{ order.total }}</div>
                 <div class="order_status {{order.status}}">{{ order.status }}</div>
-                <div class="change_order_status">
-                  <select data-orderId="{{order.id}}" onchange="changeOrderStatus(this)" class="order_status_selector" name="">
-                    <option {% if order.status == "Placed" %}selected{% endif %} value="Placed">Placed</option>
-                    <option {% if order.status == "Preparing" %}selected{% endif %} value="Preparing">Processing</option>
-                    <option {% if order.status == "Complete" %}selected{% endif %} value="Complete">Complete</option>
-                  </select>
-                </div>
+                  <div class="change_order_status">
+                  {% if title == "Admin" %}
+                    <select data-orderId="{{order.id}}" onchange="changeOrderStatus(this)" class="order_status_selector" name="">
+                      <option {% if order.status == "Placed" %}selected{% endif %} value="Placed">Placed</option>
+                      <option {% if order.status == "Preparing" %}selected{% endif %} value="Preparing">Processing</option>
+                      <option {% if order.status == "Complete" %}selected{% endif %} value="Complete">Complete</option>
+                    </select>
+                  {% endif %}
+                  </div>
               </div>
               {% for orderLine in order.orderLines %}
                 <div class="order_line">

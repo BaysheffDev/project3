@@ -8,23 +8,31 @@
     </a>
   </div>
   <div class="login_container">
-    <a href="{% url 'adminorders' %}">
+    <a href="{% url 'orders' name='admin' %}">
       <div class="admin">
         Admin&nbsp;
         <i class="fab fa-buffer"></i>
       </div>
     </a>
     {% if loggedin %}
-      <div class="">
-        Logout
-      </div>
+      <a href="{% url 'orders' name=user.username %}">
+        <div class="user_orders">
+          {{ user.username }}&nbsp;
+          <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+      </a>
+      <a href="{% url 'logout' %}">
+        <div class="logout">
+          Logout
+        </div>
+      </a>
     {% else %}
-      <a href="">
+      <a href="{% url 'login' %}">
         <div class="login">
           Login
         </div>
       </a>
-      <a href="">
+      <a href="{% url 'register' %}">
         <div class="register">
           Register
         </div>

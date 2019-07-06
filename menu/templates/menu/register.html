@@ -1,0 +1,22 @@
+{% extends "menu/base.html" %}
+
+{% block title %}
+  Register
+{% endblock %}
+
+{% block body %}
+  {% include "menu/header.html" %}
+    <div class="page_container">
+      <form class="" action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="username" value="">
+        <input type="password" name="password" value="">
+        <input type="password" name="confirmPassword" value="">
+        <input type="submit" name="" value="">
+      </form>
+      <div class="">
+        {{ message }}
+      </div>
+    </div>
+  {% include "menu/footer.html" %}
+{% endblock %}

@@ -35,6 +35,7 @@ class Topping(models.Model):
 
 class Order(models.Model):
     name = models.CharField(max_length=64)
+    username = models.CharField(max_length=64, blank=True, null=True)
     total = models.DecimalField(decimal_places=2, max_digits=6)
     created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=64, default="Placed")

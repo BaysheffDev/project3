@@ -36,15 +36,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const nightMode = document.querySelector('.switch input');
   const slider = document.querySelector('.slider');
 
-  // Nightmode color toggle
+  // Set nightmode or not
+  if (localStorage.getItem("nightmode")) {
+    nightMode.checked = localStorage.getItem("nightmode") == 'true' ? true : false;
+    console.log(nightMode.checked);
+    console.log("opposite: " + !nightMode.checked);
+    nightmode(!nightMode.checked);
+    console.log(nightMode.checked);
+  }
+
+  // Nightmode switch toggle
   slider.onclick = () => {
-    if (nightMode.checked === false) {
-      document.querySelector('body').style.background = "black";
-      document.querySelector('body').style.color = "white";
-    }
-    else {
+    console.log(nightMode.checked);
+    nightmode(nightMode.checked);
+    localStorage.setItem("nightmode", !nightMode.checked);
+  }
+
+  // Toggle nightmode
+  function nightmode(night) {
+    if (night) {
       document.querySelector('body').style.background = "white";
       document.querySelector('body').style.color = "black";
+    }
+    else {
+      document.querySelector('body').style.background = "black";
+      document.querySelector('body').style.color = "white";
     }
   }
 
@@ -239,9 +255,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Set csrf token in request header
       request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
       request.onload = () => {
-        console.log(request.responseText);
         const data = JSON.parse(request.responseText);
         console.log(data);
+        // Close cart and cart overlay
+        cartOverlay.classList.add('hidden');
+        cart.classList.remove('active');
+        cart.classList.add('hidden');
+        cartButton.classList.remove('cart_button_active');
+        cartIcon.classList.remove('cart_icon_active');
+        cartOpen = false;
       }
       // Send data
       const data = new FormData();
@@ -520,8 +542,46 @@ function placeOrder() {
 
 function changeOrderStatus(el) {
   const status = el.options[el.selectedIndex].value;
+  const orderId = el.getAttribute("data-orderid");
   const statusBox = el.closest('.order_info').querySelector('.order_status');
   const statusClass = statusBox.classList.item(1);
+
+  // const request = new XMLHttpRequest();
+  // request.open("POST", "/changeorderstatus");
+  // request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
+  // request.onload = () => {
+  //   const msg = JSON.parse(request.responseText);
+  //   console.log(msg);
+  // }
+  // data = new FormData();
+  // data.append("status", status);
+  // request.send(data);
+  // console.log(status);
+
+  // Changed to using fetch to get experience with it
+  const data = {
+    "status": status,
+    "orderId": orderId
+  }
+  console.log("=======");
+  console.log(data);
+  fetch('/changeorderstatus',
+  {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      'X-CSRFToken': cookies['csrftoken'],
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data),
+  })
+  .then(res =>
+    res.json()
+  )
+  .then(msg => console.log(msg))
+  .catch(error => console.log(error))
+
   statusBox.classList.remove(statusClass);
   statusBox.classList.add(status);
   statusBox.innerHTML = status;

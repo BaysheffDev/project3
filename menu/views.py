@@ -1,12 +1,22 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponse, Http404, JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 import json
 
 from .models import Submenu, Category, Item, Topping, Order, OrderLine, OrderLineTopping
+from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
+
+    # Check if user is logged in
+    loggedin = request.user.is_authenticated
+    user = request.user
+
     context = {
+        "user": user,
+        "loggedin": loggedin,
         "submenus": Submenu.objects.all(),
         "categories": Category.objects.all(),
         "items": Item.objects.all(),
@@ -68,6 +78,11 @@ def placeorder(request):
 
 # Validates order correctly exists in database and returns correct total price to front end (prevents fraud)
 def confirmorder(request):
+
+    # Check if user is logged in
+    loggedin = request.user.is_authenticated
+    user = request.user
+
     try:
         orderCreated = False
         order = request.POST["order"]
@@ -76,7 +91,10 @@ def confirmorder(request):
         orderjson = json.loads(order)
 
         # Create order
-        orderObj = Order(name=orderName, total=orderTotal)
+        if loggedin:
+            orderObj = Order(name=orderName, username=user.username, total=orderTotal)
+        else:
+            orderObj = Order(name=orderName, total=orderTotal)
         orderObj.save()
 
         for category, items in orderjson.items():
@@ -156,8 +174,21 @@ def confirmorder(request):
         raise Http404("didn't work mate")
 
 # Retreives all orders from database and packages all data up in JSON format
-def adminorders(request):
-    orders = Order.objects.all()
+def orders(request, name):
+
+    # Check if user is logged in
+    loggedin = request.user.is_authenticated
+    user = request.user
+
+    pagename = name
+    if name == "admin":
+        pagename = "Admin"
+    # If user logged in and chooses to view their orders
+    if name != "admin":
+        orders = Order.objects.filter(username=user.username)
+    else:
+        orders = Order.objects.all()
+
     orderCollection = []
     o = {}
     for order in orders:
@@ -196,7 +227,9 @@ def adminorders(request):
 
     # return JsonResponse({"orderCollection": orderCollection})
     context = {
-        "title": "Admin Orders",
+        "user": user,
+        "loggedin": loggedin,
+        "title": pagename,
         "orders": orderCollection,
     }
 
@@ -226,7 +259,52 @@ def adminorders(request):
 
     return render(request, "menu/orders.html", context)
 
-def test(request):
-    order=request.POST["order"]
-    obj = json.loads(order)
+def changeorderstatus(request):
+    order = json.loads(request.body)
+
+    changeStatus = Order.objects.filter(pk=order["orderId"])
+    for obj in changeStatus:
+        obj.status = order["status"]
+        obj.save()
+
+    obj = {"succsess": order}
     return JsonResponse(obj)
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return render(request, "menu/login.html", {"message": "Invalid Credentials"})
+    else:
+        return render(request, "menu/login.html", {"message": "Invalid Credentials"})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        confirmPassword = request.POST["confirmPassword"]
+        message = ""
+        if User.objects.filter(username=username).exists():
+            message = "Username exists"
+        if password != confirmPassword:
+            message = "Passwords do not match"
+        if len(password) < 4 or len(username) < 4:
+            message = "username and password must exceed 4 characters"
+        if message:
+            return render(request, "menu/register.html", {"message": message})
+        else:
+            user = User.objects.create_user(username, "fake@fake.com", password)
+            user.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        return render(request, "menu/register.html")
