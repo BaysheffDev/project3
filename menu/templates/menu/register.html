@@ -7,15 +7,24 @@
 {% block body %}
   {% include "menu/header.html" %}
     <div class="page_container">
-      <form class="" action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="username" value="">
-        <input type="password" name="password" value="">
-        <input type="password" name="confirmPassword" value="">
-        <input type="submit" name="" value="">
-      </form>
-      <div class="">
-        {{ message }}
+      <h1> Pinocchio's Pizza
+        <i class="fas fa-pizza-slice" style="transform: rotate(-60deg);"></i>
+        <i class="fas fa-pizza-slice" style="transform: translate(-5px);"></i>
+      </h1>
+      <div class="credentials_box">
+        <div class="login_title">
+          Register
+        </div>
+        <form class="credentials_form" action="{% url 'register' %}" method="post">
+          {% csrf_token %}
+          <input class="credential_input_text" type="text" name="username" placeholder="Username" autocomplete="off">
+          <input class="credential_input_text" type="password" name="password" placeholder="Password">
+          <input class="credential_input_text" type="password" name="confirmPassword" placeholder="Confirm Password">
+          <input type="submit" name="" value="Submit">
+        </form>
+        <div class="credentials_error">
+          {{ message }}
+        </div>
       </div>
     </div>
   {% include "menu/footer.html" %}

@@ -281,11 +281,11 @@ def login_view(request):
         else:
             return render(request, "menu/login.html", {"message": "Invalid Credentials"})
     else:
-        return render(request, "menu/login.html", {"message": "Invalid Credentials"})
+        return render(request, "menu/login.html")
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('index'))
+    return render(request, "menu/login.html")
 
 def register(request):
     if request.method == "POST":
