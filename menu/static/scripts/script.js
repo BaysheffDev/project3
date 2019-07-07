@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     nightmode(!nightMode.checked);
   }
   else {
-    nightMode(false);
+    const mode = false
+    nightmode(mode);
   }
 
   // Nightmode switch toggle
