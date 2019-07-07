@@ -10,18 +10,19 @@
       <div class="orders_title">
         {{ title }} Orders
       </div>
-      <div class="orders_headings">
-        <div class="order_id_heading">Id</div>
-        <div class="order_created_heading">Date</div>
-        <div class="order_name_heading">Name</div>
-        <div class="order_total_heading">Total</div>
-        <div class="order_status_heading">Status</div>
-        {% if title == "Admin" %}
-        <div class="order_status_spacer"></div>
-        {% endif %}
-      </div>
-      <div class="orders_contents">
-        {% for order in orders %}
+      <div class="orders_box">
+        <div class="orders_headings">
+          <div class="order_id_heading">Id</div>
+          <div class="order_created_heading">Date</div>
+          <div class="order_name_heading">Name</div>
+          <div class="order_total_heading">Total</div>
+          <div class="order_status_heading">Status</div>
+          {% if title == "Admin" %}
+          <div class="order_status_spacer"></div>
+          {% endif %}
+        </div>
+        <div class="orders_contents">
+          {% for order in orders %}
           <div class="order_box">
             <div class="order_id">
               {{ order.id }}
@@ -32,50 +33,51 @@
                 <div class="order_name">{{ order.name }}</div>
                 <div class="order_total">${{ order.total }}</div>
                 <div class="order_status {{order.status}}">{{ order.status }}</div>
-                  <div class="change_order_status">
+                <div class="change_order_status">
                   {% if title == "Admin" %}
-                    <select data-orderId="{{order.id}}" onchange="changeOrderStatus(this)" class="order_status_selector" name="">
-                      <option {% if order.status == "Placed" %}selected{% endif %} value="Placed">Placed</option>
-                      <option {% if order.status == "Preparing" %}selected{% endif %} value="Preparing">Processing</option>
-                      <option {% if order.status == "Complete" %}selected{% endif %} value="Complete">Complete</option>
-                    </select>
+                  <select data-orderId="{{order.id}}" onchange="changeOrderStatus(this)" class="order_status_selector" name="">
+                    <option {% if order.status == "Placed" %}selected{% endif %} value="Placed">Placed</option>
+                    <option {% if order.status == "Preparing" %}selected{% endif %} value="Preparing">Preparing</option>
+                    <option {% if order.status == "Complete" %}selected{% endif %} value="Complete">Complete</option>
+                  </select>
                   {% endif %}
-                  </div>
+                </div>
               </div>
               {% for orderLine in order.orderLines %}
-                <div class="order_line">
-                  <div class="order_line_item">
-                    <div class="line_item_category">
-                      ({{ orderLine.itemCategory }})
-                    </div>
-                    <div class="line_item_qty">
-                      {{ orderLine.qty }}x
-                    </div>
-                    <div class="line_item_name">
-                      {{ orderLine.itemName }}
-                    </div>
-                    <div class="line_item_size">
-                      ({{ orderLine.itemSize }})
-                    </div>
+              <div class="order_line">
+                <div class="order_line_item">
+                  <div class="line_item_category">
+                    ({{ orderLine.itemCategory }})
                   </div>
-                  {% if orderLine.toppings %}
-                    <div class="order_line_topping">
-                      -
-                      {% for topping in orderLine.toppings %}
-                        <div class="line_item_topping">
-                          {{ topping }}
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
-                  <div class="order_line_price">
-                    {{ orderLine.linePrice }}
+                  <div class="line_item_qty">
+                    {{ orderLine.qty }}x
+                  </div>
+                  <div class="line_item_name">
+                    {{ orderLine.itemName }}
+                  </div>
+                  <div class="line_item_size">
+                    ({{ orderLine.itemSize }})
                   </div>
                 </div>
+                {% if orderLine.toppings %}
+                <div class="order_line_topping">
+                  -
+                  {% for topping in orderLine.toppings %}
+                  <div class="line_item_topping">
+                    {{ topping }}
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+                <div class="order_line_price">
+                  {{ orderLine.linePrice }}
+                </div>
+              </div>
               {% endfor %}
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
     </div>
   {% include "menu/footer.html" %}

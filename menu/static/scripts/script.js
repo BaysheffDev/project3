@@ -39,15 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set nightmode or not
   if (localStorage.getItem("nightmode")) {
     nightMode.checked = localStorage.getItem("nightmode") == 'true' ? true : false;
-    console.log(nightMode.checked);
-    console.log("opposite: " + !nightMode.checked);
     nightmode(!nightMode.checked);
-    console.log(nightMode.checked);
   }
 
   // Nightmode switch toggle
   slider.onclick = () => {
-    console.log(nightMode.checked);
     nightmode(nightMode.checked);
     localStorage.setItem("nightmode", !nightMode.checked);
   }
@@ -135,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pizzaName.trim() !== "Special") {
               const toppingAmount = pizzaName.split(" ");
                   pizzaToppingLimit = parseInt(toppingAmount[0]);
-                  console.log("pizzatoppinglimit" + pizzaToppingLimit);
             }
             else {
               pizzaToppingLimit = 8;
@@ -256,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
       request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
       request.onload = () => {
         const data = JSON.parse(request.responseText);
-        console.log(data);
         // Close cart and cart overlay
         cartOverlay.classList.add('hidden');
         cart.classList.remove('active');
@@ -264,6 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
         cartButton.classList.remove('cart_button_active');
         cartIcon.classList.remove('cart_icon_active');
         cartOpen = false;
+
+        // Remove items from cart
+        cart.querySelectorAll(".cart_item_container").forEach(item => {
+          item.parentNode.removeChild(item);
+        });
+        cart.querySelector(".cart_total_amount").innerHTML = 0;
+
+        // Order confirmed notification
+        cartNotification("#01b200", "Order successfully placed!");
       }
       // Send data
       const data = new FormData();
@@ -286,19 +289,20 @@ document.addEventListener('DOMContentLoaded', () => {
   //     // Set csrf token in request header
   //     request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
   //     request.onload = () => {
-  //       console.log(request.responseText);
   //       const data = JSON.parse(request.responseText);
-  //       console.log(data);
   //     }
   //     request.send();
-  //     console.log("sent");
   //   }
 
 });
 
 // Trigger cart notification
-function cartNotification() {
+function cartNotification(color, message) {
   notification = document.querySelector('.cart_notification_container');
+  note = document.querySelector('.cart_notification_box');
+  note.querySelector(".cart_notification").innerHTML = message;
+  note.style.background = color;
+  note.querySelector(".cart_notification_point").style.borderTop = `10px solid ${color}`;
   notification.classList.remove('cart_notification_animation');
   void notification.offsetWidth;
   notification.classList.add('cart_notification_animation');
@@ -326,8 +330,6 @@ function addToCart(el) {
             const name = topping.closest('.topping').querySelector('.topping_name').innerHTML;
             toppings += "<div class='cart_item_toppings_name'>" + name + " </div>";
             toppingNames.push(name);
-            console.log(toppings);
-            console.log(toppingNames);
           }
         });
       }
@@ -364,12 +366,10 @@ function addToCart(el) {
           const existingCartItem = item2.querySelector('.cart_item_name').innerHTML;
           const existingCartItemSize = item2.querySelector('.cart_item_size').innerHTML;
           if (existingCartItem === cartItem && existingCartItemSize === cartItemSize) {
-            console.log("names and sizes match");
             matchedItem = true;
             const cartItemToppings = item2.querySelectorAll('.cart_item_toppings_name');
             let counter = 0;
             if (toppingNames.length !== 0) {
-              console.log("toppings !== ''");
               cartItemToppings.forEach(topping => {
                 if (topping.innerHTML.trim() != toppingNames[counter]) {
                   matchedItem = false;
@@ -457,7 +457,7 @@ function addToCart(el) {
     });
   }
   // Trigger cart notification if there were items to add to cart
-  changes ? cartNotification() : console.log("No items selected");
+  changes ? cartNotification("#fe5252", "Successfully added to cart!") : console.log("No items selected");
 
   pizzaSelected = false;
 }
@@ -482,7 +482,6 @@ function removeItem(el) {
 function placeOrder() {
   // Check if any items in cart
   const itemsCheck = document.querySelectorAll('.cart_item_container');
-  console.log(itemsCheck);
   if (itemsCheck.length === 0) {
     console.log("no items in cart");
   }
@@ -524,9 +523,7 @@ function placeOrder() {
     // Set csrf token in request header
     request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
     request.onload = () => {
-      console.log(request.responseText);
       const data = JSON.parse(request.responseText);
-      console.log(data);
       document.querySelector('.order_confirmation_total_amount').innerHTML = "$" + data.price
       document.querySelector('.order_confirmation_overlay').classList.remove('hidden');
       document.querySelector('.order_confirmation_container').classList.remove('hidden');
@@ -536,7 +533,6 @@ function placeOrder() {
     const orderData = JSON.stringify(orderItems);
     data.append("order", orderData);
     request.send(data);
-    console.log("sent");
   }
 }
 
@@ -551,20 +547,16 @@ function changeOrderStatus(el) {
   // request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);
   // request.onload = () => {
   //   const msg = JSON.parse(request.responseText);
-  //   console.log(msg);
   // }
   // data = new FormData();
   // data.append("status", status);
   // request.send(data);
-  // console.log(status);
 
   // Changed to using fetch to get experience with it
   const data = {
     "status": status,
     "orderId": orderId
   }
-  console.log("=======");
-  console.log(data);
   fetch('/changeorderstatus',
   {
     method: "POST",
@@ -585,7 +577,6 @@ function changeOrderStatus(el) {
   statusBox.classList.remove(statusClass);
   statusBox.classList.add(status);
   statusBox.innerHTML = status;
-  console.log("changing status: " + status);
 }
 
 //
