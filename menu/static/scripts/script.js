@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     nightMode.checked = localStorage.getItem("nightmode") == 'true' ? true : false;
     nightmode(!nightMode.checked);
   }
+  else {
+    nightMode(false);
+  }
 
   // Nightmode switch toggle
   slider.onclick = () => {

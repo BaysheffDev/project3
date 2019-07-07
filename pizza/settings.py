@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os
+import os, django_heroku, dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -78,6 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     'CONN_MAX_AGE': 500,
+
+    # "default": dj_database_url.config(default='postgres://kpbknzqbfmfjjr:9577f36259ea0595a8e3a7a5ebbe0b43850324f5a1a2ee06cb6fad8bca36c046@ec2-23-21-160-38.compute-1.amazonaws.com:5432/d4fh1gcn1dresq')
     }
 }
 
